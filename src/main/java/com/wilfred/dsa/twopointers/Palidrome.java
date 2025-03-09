@@ -13,7 +13,7 @@ public class Palidrome {
         while (end > start) {
             if (s.charAt(end) != s.charAt(start)) {
                 return false;
-            }
+             }
             end--;
             start++;
 

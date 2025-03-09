@@ -155,6 +155,47 @@ public class Solution {
         return results;
     }
 
+
+    public static int countGoodSubstrings(String s) {
+        int k = 3;
+        if (s.length() < k) {
+            return 0;
+        }
+        int count = 0;
+        String first = s.substring(0, k);
+        if (isUnique(first)) {
+            count++;
+        }
+        for (int i = k; i < s.length(); i++) {
+            int x = (i-k);
+            String substring = s.substring((x), i);
+            if (isUnique(substring)) {
+
+                count++;
+            }
+
+        }
+        return count;
+
+
+    }
+
+    static boolean isUnique(String sub) {
+        int start = 0;
+        int end = sub.length() - 1;
+        while (end >start) {
+            System.out.println("Char end "+ sub.charAt(end));
+            System.out.println("Char start "+ sub.charAt(start));
+            if (sub.charAt(end) == sub.charAt(start)) {
+                return false;
+            }
+
+            end--;
+            start++;
+        }
+        return true;
+    }
+
     static List<Integer> FirstNegativeInteger(int arr[], int k) {
         LinkedList<Integer> queue = new LinkedList<>();
         List<Integer> ans = new ArrayList<>();
@@ -254,10 +295,12 @@ public class Solution {
         int k = 3;
         //System.out.println(maximumSumSubarray(arr, k));
         int[] nums = {1, 2, 3, 1, 4, 5, 2, 3, 6};
-        System.out.println(maxOfSubarrays(nums, k));
+        //System.out.println(maxOfSubarrays(nums, k));
         int[] cost = {1, 12, 5, 111, 200, 1000, 10};
         int K = 50;
-        System.out.println(maximum_toys(cost, K));
+        // System.out.println(maximum_toys(cost, K));
+        String s = "xyzzaz";
+        System.out.println("Good String " + countGoodSubstrings(s));
 
     }
 }
