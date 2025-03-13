@@ -1,8 +1,6 @@
 package com.wilfred.dsa.twopointers;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class TwoSum {
     public static void main(String[] args) {
@@ -15,6 +13,10 @@ public class TwoSum {
         char[] s = new char[]{'h', 'e', 'l', 'l', 'o'};
         reverseString(s);
         System.out.println(maxArea(height));
+        int[] nums1 = {1, 3};
+        int[] nums2 = {2};
+        int []  num3 = {-1,0,1,2,-1,-4};
+        System.out.println("three sums!!  " + threeSum(num3));
     }
 
 
@@ -116,6 +118,71 @@ public class TwoSum {
 
         }
         return results;
+    }
+
+    public static double findMedianSortedArrays(int[] nums1, int[] nums2) {
+        List<Integer> integers = new ArrayList<>();
+        int x = 0;
+        int y = 0;
+        while (x < nums1.length && y < nums2.length) {
+            if (nums1[x] < nums2[y]) {
+                integers.add(nums1[x]);
+                x++;
+            } else {
+                integers.add(nums2[y]);
+                y++;
+            }
+        }
+        while (x < nums1.length) {
+            integers.add(nums1[x]);
+            x++;
+        }
+        while (y < nums2.length) {
+            integers.add(nums2[y]);
+            y++;
+        }
+
+        int length = integers.size();
+        int mid = length / 2;
+
+        if (length % 2 == 0) {
+            return (double) (integers.get(mid) + integers.get(mid - 1)) / 2;
+        } else {
+            return integers.get(mid);
+        }
+
+
+    }
+
+    public static List<List<Integer>> threeSum(int[] nums) {
+        int length = nums.length;
+        int start = 0;
+        int end = length - 1;
+        List<List<Integer>> results = new ArrayList<>();
+        List<Integer> indexs = new ArrayList<>();
+        while (start < end) {
+            int i = nums[start];
+            int j = nums[end - 1];
+            int k = nums[end];
+            int sum = i + j + k;
+            System.out.println("i:::::::"+i+ " ::::::::::j "+j +" ::::::::::::::k "+k);
+            /* i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.*/
+            if (sum == 0) {
+                indexs.add(i);
+                indexs.add(j);
+                indexs.add(k);
+                results.add(indexs);
+                end--;
+            } else if (sum <=1) {
+                end--;
+            } else {
+                start++;
+            }
+
+
+        }
+        return results;
+
     }
 
 }

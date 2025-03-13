@@ -1,5 +1,7 @@
 package com.wilfred.dsa.linkedlist;
 
+import java.util.HashSet;
+
 public class LinkedList {
     private Node head;
     private Node tail;
@@ -92,6 +94,24 @@ public class LinkedList {
         return temp;
     }
 
+    public Node findMiddleNode() {
+        int mid;
+        if (length % 2 == 0) {
+            mid = (length + 1) / 2;
+        } else {
+            mid = length / 2;
+        }
+
+        if (mid <= 0) {
+            return null;
+        }
+        Node temp = head;
+        for (int i = 0; i < mid; i++) {
+            temp = temp.next;
+        }
+        return temp;
+    }
+
     public boolean set(int index, int value) {
         Node temp = get(index);
         if (temp != null) {
@@ -172,7 +192,184 @@ public class LinkedList {
         }
     }
 
-    public void getLength() {
-        System.out.println("Length: " + length);
+
+    public boolean hasLoop() {
+        Node slow = head;
+        Node fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (fast == slow) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public Node findKthFromEnd(int k) {
+        int length = getLength();
+        if (head == null || length < k) {
+            return null;
+        }
+        Node first = head;
+        Node kthNode = head;
+        for (int i = 0; i < k; i++) {
+            if (first == null) {
+                return null;
+            }
+            first = first.next;
+        }
+        while (first != null) {
+            first = first.next;
+            kthNode = kthNode.next;
+        }
+        return kthNode;
+
+    }
+
+    public void partitionListMine(int x) {
+        int start = 0;
+        int end = length - 1;
+        while (start < end) {
+            Node startNode = get(start);
+            Node endNode = get(end);
+            printList();
+            System.out.println("end**************");
+            if (startNode != null && endNode != null && startNode.value > x && endNode.value < x) {
+                int temp = startNode.value;
+                startNode.value = endNode.value;
+                endNode.value = temp;
+                start++;
+                end--;
+
+            } else if (startNode != null && endNode != null && startNode.value < x && endNode.value > x) {
+                start++;
+                end--;
+            } else if (startNode != null && startNode.value < x) {
+                start++;
+            } else {
+                end--;
+            }
+
+        }
+
+
+    }
+
+    public void partitionList(int x) {
+        if (head == null || head.next == null) {
+            return;
+        }
+        Node start = head;
+        Node end = head;
+
+        // Find the last node
+        while (end.next != null) {
+            end = end.next;
+        }
+
+        Node newEnd = end;
+        Node prev = null;
+        Node curr = head;
+
+        while (curr != newEnd) {
+            printList();
+            System.out.println("end**************");
+            if (curr.value >= x) {
+                // Move node to end
+                if (prev != null) {
+                    prev.next = curr.next; // Skip current node
+                } else {
+                    head = curr.next; // Move head forward
+                }
+
+                newEnd.next = curr;
+                curr.next = null;
+                newEnd = curr;
+
+                // Move to next node
+                curr = (prev != null) ? prev.next : head;
+            } else {
+                prev = curr;
+                curr = curr.next;
+            }
+        }
+
+        // If the last node is also greater than x, move it to the end
+        if (newEnd.value >= x && newEnd != end) {
+            if (prev != null) {
+                prev.next = newEnd.next;
+            }
+            newEnd.next = null;
+            end.next = newEnd;
+        }
+    }
+
+    public void removeDuplicates() {
+        HashSet<Integer> hashSet = new HashSet<>();
+        int count = 0;
+        if (head == null || length <= 0)
+            return;
+        hashSet.add(head.value);
+        while (head.next != null) {
+            if (hashSet.contains(head.value)) {
+                head = head.next.next;
+            } else {
+                hashSet.add(head.value);
+                head = head.next;
+            }
+
+        }
+    }
+
+    public int binaryToDecimal() {
+        if (head == null)
+            return 0;
+        int num = 0;
+        while (head != null) {
+            num = (num * 2) + head.value;
+            head = head.next;
+
+        }
+        return num;
+    }
+
+
+    public void reverseBetween(int m, int n) {
+        Node current = head;
+        Node prev = null;
+        int i;
+        for( i=1; i<m;i++){
+            prev = current;
+            current = current.next;
+        }
+        Node reverseHead = current;
+        Node  reverseTail = null;
+        Node nextNode;
+        while(i<=n){
+            nextNode = current.next;
+            current.next= reverseTail;
+            reverseTail= current;
+            current= nextNode;
+            i++;
+        }
+        if(prev!=null){
+            prev.next= reverseTail;
+        }else{
+          head = reverseTail;
+        }
+        reverseHead.next = current;
+
+
+    }
+
+
+    public int getLength() {
+        int length = 0;
+        while (head != null) {
+            head = head.next;
+            length++;
+        }
+        return length;
     }
 }
