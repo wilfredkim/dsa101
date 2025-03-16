@@ -133,10 +133,10 @@ public class LinkedList {
             append(value);
             return true;
         }
-        Node newNode = get(index - 1);
-        Node temp = newNode.next;
-        temp.next = newNode;
+        Node newNode = new Node(value);
+        Node temp = get(index - 1);
         newNode.next = temp.next;
+        temp.next = newNode;
         length++;
         return true;
 
@@ -339,24 +339,24 @@ public class LinkedList {
         Node current = head;
         Node prev = null;
         int i;
-        for( i=1; i<m;i++){
+        for (i = 1; i < m; i++) {
             prev = current;
             current = current.next;
         }
         Node reverseHead = current;
-        Node  reverseTail = null;
+        Node reverseTail = null;
         Node nextNode;
-        while(i<=n){
+        while (i <= n) {
             nextNode = current.next;
-            current.next= reverseTail;
-            reverseTail= current;
-            current= nextNode;
+            current.next = reverseTail;
+            reverseTail = current;
+            current = nextNode;
             i++;
         }
-        if(prev!=null){
-            prev.next= reverseTail;
-        }else{
-          head = reverseTail;
+        if (prev != null) {
+            prev.next = reverseTail;
+        } else {
+            head = reverseTail;
         }
         reverseHead.next = current;
 
@@ -372,4 +372,51 @@ public class LinkedList {
         }
         return length;
     }
+
+    int getMiddle(Node head) {
+        int mid;
+        int length = getLength();
+        if (length % 2 == 0) {
+            mid = (length + 1) / 2;
+        } else {
+            mid = length / 2;
+        }
+
+
+        Node temp = head;
+        for (int i = 0; i < mid; i++) {
+            temp = temp.next;
+        }
+        return temp.value;
+    }
+
+    public Node rotate(int k) {
+        if (k == 0 || head == null)
+            return head;
+        Node tail = head;
+        int len = 1;
+
+        while (tail.next != null) {
+            tail = tail.next;
+            len += 1;
+        }
+        k %= len;
+        if (k == 0)
+            return head;
+
+        tail.next = head;
+
+        // Traverse the linked list to find the kth node
+        tail = head;
+        for (int i = 1; i < k; i++)
+            tail = tail.next;
+
+        // Update the (k + 1)th node as the new head
+        head = tail.next;
+
+        // Break the loop by updating next pointer of kth node
+        tail.next = null;
+        return head;
+    }
+
 }
