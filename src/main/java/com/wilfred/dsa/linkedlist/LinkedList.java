@@ -1,5 +1,6 @@
 package com.wilfred.dsa.linkedlist;
 
+import java.util.HashMap;
 import java.util.HashSet;
 
 public class LinkedList {
@@ -14,14 +15,6 @@ public class LinkedList {
         length = 1;
     }
 
-
-    public void printList() {
-        Node node = head;
-        while (node != null) {
-            System.out.println(node.value);
-            node = node.next;
-        }
-    }
 
     public void append(int value) {
         Node nodeToBeAppended = new Node(value);
@@ -233,7 +226,7 @@ public class LinkedList {
         while (start < end) {
             Node startNode = get(start);
             Node endNode = get(end);
-            printList();
+
             System.out.println("end**************");
             if (startNode != null && endNode != null && startNode.value > x && endNode.value < x) {
                 int temp = startNode.value;
@@ -273,7 +266,6 @@ public class LinkedList {
         Node curr = head;
 
         while (curr != newEnd) {
-            printList();
             System.out.println("end**************");
             if (curr.value >= x) {
                 // Move node to end
@@ -417,6 +409,132 @@ public class LinkedList {
         // Break the loop by updating next pointer of kth node
         tail.next = null;
         return head;
+    }
+
+    int getKthFromLast(Node head, int k) {
+        // Your code here
+
+        int len = 0;
+        Node temp = head;
+        while (temp != null) {
+            temp = temp.next;
+            len++;
+        }
+        if (len < k)
+            return -1;
+        temp = head;
+        for (int i = 0; i < len - k + 1; i++) {
+            temp = temp.next;
+        }
+        return temp.value;
+    }
+
+    Node deleteLastOccurrence(Node head, int key) {
+        Node prev = null;
+        Node lastPrev = null;
+        Node last = null;
+        Node current = head;
+
+        while (current != null) {
+            if (current.value == key) {
+                lastPrev = prev;
+                last = head;
+            }
+            prev = current;
+            current = current.next;
+        }
+        if (last != null) {
+            if (lastPrev != null) {
+                lastPrev.next = last.next;
+            } else {
+                head = head.next;
+            }
+        }
+        return head;
+    }
+
+    Node deleteMid(Node head) {
+        Node current = head;
+        int len = 0;
+        while (current != null) {
+            current = current.next;
+            len++;
+        }
+        int mid = (length % 2 == 0) ? (length + 1) / 2 : length / 2;
+        if (mid <= 0 || mid > length) {
+            return null;
+        }
+        Node prev = null;
+        current = head;
+        for (int i = 0; i < mid - 1; ++i) {
+            prev = current;
+            current = current.next;
+        }
+        if (prev != null) {
+            prev.next = current.next;
+        }
+        return head;
+    }
+
+    Node deleteMid2(Node head) {
+        if (head == null)
+            return null;
+        if (head.next == null) {
+            return null;
+        }
+
+        Node prev = null;
+        Node start = head;
+        Node end = head;
+        while (end != null && end.next != null) {
+            end = end.next.next;
+
+            // Update prev to hold the previous
+            // slow pointer value
+            prev = start;
+
+            start = start.next;
+        }
+        prev.next = start.next;
+
+        return head;
+
+    }
+
+   static Node removeDuplicates(Node head) {
+        // Your code here
+        Node current = head;
+        while (current != null && current.next != null) {
+            if (current.value == current.next.value) {
+                current.next = current.next.next;
+            } else {
+                current = current.next;
+            }
+        }
+        return current;
+
+    }
+
+    public static void printList(Node head) {
+        Node temp = head;
+        while (temp != null) {
+            System.out.print(temp.value + " -> ");
+            temp = temp.next;
+        }
+    }
+
+    public static void main(String[] args) {
+        Node head = new Node(2);
+        head.next = new Node(2);
+        head.next.next = new Node(2);
+        head.next.next.next = new Node(2);
+        head.next.next.next.next = new Node(2);
+        System.out.print("Original Linked List: ");
+        printList(head);
+        System.out.print("Original Linked List: ");
+
+        removeDuplicates(head);
+        printList(head);
     }
 
 }
