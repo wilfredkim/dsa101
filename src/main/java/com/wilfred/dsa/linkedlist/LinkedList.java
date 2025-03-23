@@ -2,6 +2,7 @@ package com.wilfred.dsa.linkedlist;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class LinkedList {
     private Node head;
@@ -299,7 +300,6 @@ public class LinkedList {
 
     public void removeDuplicates() {
         HashSet<Integer> hashSet = new HashSet<>();
-        int count = 0;
         if (head == null || length <= 0)
             return;
         hashSet.add(head.value);
@@ -327,7 +327,7 @@ public class LinkedList {
     }
 
 
-    public void reverseBetween(int m, int n) {
+    public void reverseBetween3(int m, int n) {
         Node current = head;
         Node prev = null;
         int i;
@@ -501,17 +501,18 @@ public class LinkedList {
 
     }
 
-   static Node removeDuplicates(Node head) {
-        // Your code here
+
+    public static boolean detectLoop(Node head) {
         Node current = head;
-        while (current != null && current.next != null) {
-            if (current.value == current.next.value) {
-                current.next = current.next.next;
-            } else {
-                current = current.next;
+        Node fast = head;
+        while (fast != null && fast.next != null) {
+            current = current.next;
+            fast = fast.next.next;
+            if (fast == current) {
+                return true;
             }
         }
-        return current;
+        return false;
 
     }
 
@@ -523,8 +524,241 @@ public class LinkedList {
         }
     }
 
+    public static void printList(ListNode head) {
+        ListNode temp = head;
+        while (temp != null) {
+            System.out.print(temp.val + " -> ");
+            temp = temp.next;
+        }
+    }
+
+    static void linkdelete(Node head, int n, int m) {
+        // your code here
+        if (m <= 0)
+            return;
+        int len = 0;
+        int mAfter = 0;
+        Node current = head;
+        while (current != null) {
+            current = current.next;
+            len++;
+        }
+        current = head;
+        Node prev = null;
+        for (int i = 0; i < len; i++) {
+            if (i == n) {
+                prev = current;
+            }
+            if (prev != null) {
+                mAfter++;
+            }
+            if (mAfter == m) {
+                prev = current.next;
+            }
+            current = current.next;
+        }
+
+    }
+
+    public static ListNode add(ListNode head, int data) {
+        ListNode newNode = new ListNode(data);
+        if (head == null) {
+            head = newNode;
+            return head;
+        }
+        ListNode temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+        return temp.next = newNode;
+
+    }
+
+    public static ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        ListNode results = new ListNode(0);
+        ListNode current = results;
+        int carryForward = 0;
+        while (l1 != null || l2 != null || carryForward != 0) {
+            int x = (l1 != null) ? l1.val : 0;
+            int y = (l2 != null) ? l2.val : 0;
+            int sum = carryForward + x + y;
+            carryForward = sum / 10;
+            current.next = new ListNode(sum % 10);
+            current = current.next;
+            if (l1 != null) {
+                l1 = l1.next;
+            }
+            if (l2 != null) {
+                l2 = l2.next;
+            }
+        }
+        printList(results.next);
+        return results.next;
+    }
+
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode fast = head, slow = head;
+        for (int i = 0; i < n; i++) fast = fast.next;
+        if (fast == null) return head.next;
+        while (fast.next != null) {
+            fast = fast.next;
+            slow = slow.next;
+        }
+        slow.next = slow.next.next;
+        return head;
+
+    }
+
+    public boolean hasCycle(ListNode head) {
+        ListNode current = head;
+        ListNode slow = head;
+        while (current != null && current.next != null) {
+            slow = slow.next;
+            current = current.next.next;
+            if (current == slow) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
+    public static ListNode mergeTwoLists(ListNode list1, ListNode list2) {
+        ListNode results = new ListNode(-1);
+        ListNode tail = results;
+
+        while (list1 != null && list2 != null) {
+            if (list1.val < list2.val) {
+                tail.next = new ListNode(list1.val);
+                list1 = list1.next;
+            } else {
+                tail.next = new ListNode(list2.val);
+                list2 = list2.next;
+            }
+            tail = tail.next;
+
+        }
+        while (list1 != null) {
+            tail.next = new ListNode(list1.val);
+            list1 = list1.next;
+            tail = tail.next;
+        }
+        while (list2 != null) {
+            tail.next = new ListNode(list2.val);
+            list2 = list2.next;
+            tail = tail.next;
+        }
+        return results.next;
+    }
+
+    public static ListNode deleteDuplicates(ListNode head) {
+        ListNode results = head;
+        ListNode current = results;
+        while (current != null && current.next != null) {
+            if (current.val == current.next.val) {
+                current.next = current.next.next;
+            } else {
+                current = current.next;
+            }
+        }
+        return results;
+
+
+    }
+
+    public static ListNode deleteDuplicatesEntirely(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode results = new ListNode(-1);
+        results.next = head;
+        ListNode current = head;
+        ListNode prev = results;
+        while (current != null) {
+            if (current.next != null && current.val == current.next.val) {
+                while (current.next != null && current.val == current.next.val) {
+                    current = current.next;
+                }
+                prev.next = current.next;
+            } else {
+                prev = prev.next;
+
+            }
+            current = current.next;
+        }
+        return results.next;
+
+
+    }
+
+    public static ListNode swapPairs(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+        ListNode results = head;
+        ListNode current = results;
+        while (current != null && current.next != null) {
+            int temp = current.val;
+            current.val = current.next.val;
+            current.next.val = temp;
+            current = current.next.next;
+        }
+        return results;
+
+    }
+
+    public static ListNode partition(ListNode head, int x) {
+
+        ListNode before = new ListNode(-1);
+        ListNode after = new ListNode(-1);
+        ListNode tailA = before, tailB = after;
+        ListNode current = head;
+        while (current != null) {
+            if (current.val < x) {
+                tailA.next = new ListNode(current.val);
+                tailA = tailA.next;
+            } else {
+                tailB.next = new ListNode(current.val);
+                tailB = tailB.next;
+            }
+            current = current.next;
+        }
+        tailB.next = null;
+        tailA.next = after.next;
+
+        return before.next;
+
+
+    }
+
+    public static ListNode reverseBetween(ListNode head, int left, int right) {
+        if (head == null || left == right) return head;
+        ListNode results = new ListNode(0);
+        results.next = head;
+        ListNode leftNode = results;
+        for (int i = 1; i < left; i++) {
+            leftNode = leftNode.next;
+        }
+        ListNode rightNode = leftNode.next;
+        ListNode prev = null;
+
+        for (int i = left; i <= right; i++) {
+            ListNode next = rightNode.next;
+            rightNode.next = prev;
+            prev = rightNode;
+            rightNode = next;
+        }
+        leftNode.next.next = rightNode;
+        leftNode.next = prev;
+        return results.next;
+    }
+
+
+
+
+
     public static void main(String[] args) {
-        Node head = new Node(2);
+       /* Node head = new Node(2);
         head.next = new Node(2);
         head.next.next = new Node(2);
         head.next.next.next = new Node(2);
@@ -534,7 +768,26 @@ public class LinkedList {
         System.out.print("Original Linked List: ");
 
         removeDuplicates(head);
-        printList(head);
+        printList(head);*/
+        ListNode head = new ListNode(1);
+        head.next = new ListNode(2);
+        head.next.next = new ListNode(3);
+        head.next.next.next = new ListNode(4);
+
+        ListNode head2 = new ListNode(1);
+        head2.next = new ListNode(2);
+        head2.next.next = new ListNode(3);
+        //head2.next.next.next = new ListNode(4);
+        //head2.next.next.next.next = new ListNode(5);
+        ListNode listNode = mergeTwoLists(head, head2);
+        printList(head2);
+        System.out.println();
+
+        ListNode listNode1 = reverseBetween(head2, 2, 3);
+        System.out.println("PART");
+        printList(listNode1);
+
     }
+
 
 }
