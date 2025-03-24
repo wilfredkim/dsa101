@@ -1,7 +1,7 @@
 package com.wilfred.dsa.stacks;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.Stack;
 
 public class TestStack<T> {
     private ArrayList<T> stackList = new ArrayList<>();
@@ -56,13 +56,31 @@ public class TestStack<T> {
         }
         String reverse = "";
         while (!stack.isEmpty()) {
-            Character pop = stack.get(stack.size()-1);
+            Character pop = stack.get(stack.size() - 1);
             reverse += pop;
             stack.remove(pop);
         }
         return reverse;
 
 
+    }
+
+    public static void sortStack(Stack<Integer> stack) {
+        Stack<Integer> additionalStack = new Stack<>();
+
+        while (!stack.isEmpty()) {
+            int temp = stack.pop();
+
+            while (!additionalStack.isEmpty() && additionalStack.peek() > temp) {
+                stack.push(additionalStack.pop());
+            }
+
+            additionalStack.push(temp);
+        }
+
+        while (!additionalStack.isEmpty()) {
+            stack.push(additionalStack.pop());
+        }
     }
 
     public static void main(String[] args) {
