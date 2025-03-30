@@ -40,6 +40,7 @@ public class BinarySearchTree {
         }
     }
 
+
     public boolean contains(int value) {
         if (root == null) {
             return false;
