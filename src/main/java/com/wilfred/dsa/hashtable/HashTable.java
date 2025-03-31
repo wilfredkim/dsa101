@@ -99,6 +99,7 @@ public class HashTable {
 
     }
 
+
     public static List<Integer> findDuplicates(int[] nums) {
         HashMap<Integer, Integer> hashMap = new HashMap<>();
         for (int i : nums) {
@@ -265,7 +266,7 @@ public class HashTable {
         StringBuilder roman = new StringBuilder();
 
         for (int i = 0; i < values.length; i++) {
-            System.out.println("Values::::::::::::"+values[i]);
+            System.out.println("Values::::::::::::" + values[i]);
             while (num >= values[i]) {
                 num -= values[i];
                 roman.append(romanLiterals[i]);
@@ -294,6 +295,186 @@ public class HashTable {
 
 
     }
+
+
+    public int majorityElement(int[] nums) {
+
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+
+        for (int i : nums) {
+            if (hashMap.containsKey(i)) {
+                hashMap.put(i, hashMap.getOrDefault(i, 0) + 1);
+            } else {
+                hashMap.put(i, 1);
+            }
+        }
+        int max = nums.length / 2;
+        int value = 0;
+        for (Map.Entry<Integer, Integer> entry : hashMap.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                value = entry.getKey();
+            }
+        }
+        return value;
+
+    }
+
+    public boolean isHappy(int n) {
+        Set<Integer> seen = new HashSet<>();
+
+        while (n != 1 && !seen.contains(n)) {
+            seen.add(n);
+            n = getSumOfSquares(n);
+        }
+
+        return n == 1;
+    }
+
+    private int getSumOfSquares(int num) {
+        int sum = 0;
+        while (num > 0) {
+            int digit = num % 10;
+            sum += digit * digit;
+            num /= 10;
+        }
+        return sum;
+    }
+
+    public boolean isIsomorphic(String s, String t) {
+        HashMap<Character, Integer> hashSet = new HashMap<>();
+        HashMap<Character, Integer> hashSet2 = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            if (hashSet.containsKey(c)) {
+                hashSet.put(c, hashSet.getOrDefault(c, 0) + 1);
+            } else {
+                hashSet.put(c, 1);
+            }
+        }
+        for (char c : t.toCharArray()) {
+            if (hashSet2.containsKey(c)) {
+                hashSet2.put(c, hashSet2.getOrDefault(c, 0) + 1);
+            } else {
+                hashSet2.put(c, 1);
+            }
+        }
+        return hashSet.size() == hashSet2.size();
+    }
+
+    public boolean containsDuplicate(int[] nums) {
+        HashSet<Integer> hashSet = new HashSet<>();
+        for (int i : nums) {
+            hashSet.add(i);
+        }
+        return nums.length != hashSet.size();
+
+    }
+
+    public boolean containsNearbyDuplicate(int[] nums, int k) {
+        HashMap<Integer, Integer> map = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (map.containsKey(nums[i]) && (i - map.get(nums[i]) <= k)) {
+                return true;
+            }
+            map.put(nums[i], i);
+        }
+
+        return false;
+    }
+
+    public boolean isAnagram(String s, String t) {
+        if (s.length() != t.length()) return false;
+
+        HashMap<Character, Integer> hashMap = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            hashMap.put(c, hashMap.getOrDefault(c, 0) + 1);
+        }
+        for (char c : t.toCharArray()) {
+            if (!hashMap.containsKey(c)) return false;
+            hashMap.put(c, hashMap.get(c) - 1);
+            if (hashMap.get(c) == 0) hashMap.remove(c);
+        }
+
+        return hashMap.isEmpty();
+
+    }
+
+    public int missingNumber(int[] nums) {
+        int max = Integer.MAX_VALUE;
+        HashSet<Integer> hashSet = new HashSet<>();
+        for (int i : nums) {
+            hashSet.add(i);
+        }
+        for (int i = 0; i < max; i++) {
+            if (!hashSet.contains(i)) {
+                return i;
+            }
+        }
+        return max;
+
+    }
+
+    public static boolean areValuesEqualAtIndices(HashMap<Integer, String> map1, HashMap<Integer, String> map2,
+                                                  int index1, int index2) {
+        return map1.get(index1) != null && map1.get(index1).equals(map2.get(index2));
+    }
+
+    public static boolean wordPattern(String pattern, String s) {
+        String[] words = s.split(" ");
+        if (pattern.length() != words.length) return false;
+
+        HashMap<Character, String> charToWord = new HashMap<>();
+        HashMap<String, Character> wordToChar = new HashMap<>();
+
+        for (int i = 0; i < pattern.length(); i++) {
+            char ch = pattern.charAt(i);
+            String word = words[i];
+            if (charToWord.containsKey(ch)) {
+                if (!charToWord.get(ch).equals(word)) return false;
+            } else {
+                charToWord.put(ch, word);
+            }
+            if (wordToChar.containsKey(word)) {
+                if (wordToChar.get(word) != ch) return false;
+            } else {
+                wordToChar.put(word, ch);
+            }
+        }
+
+        return true;
+    }
+
+    public String shortestCompletingWord(String licensePlate, String[] words) {
+        Map<Character, Integer> letterCount = new HashMap<>();
+        for (char c : licensePlate.toCharArray()) {
+            if (Character.isLetter(c)) {
+                c = Character.toLowerCase(c);
+                letterCount.put(c, letterCount.getOrDefault(c, 0) + 1);
+            }
+        }
+        Arrays.sort(words, Comparator.comparingInt(String::length));
+        for (String word : words) {
+            if (isCompletingWord(word, letterCount)) {
+                return word;
+            }
+        }
+        return "";
+
+    }
+    private static boolean isCompletingWord(String word, Map<Character, Integer> letterCount) {
+        Map<Character, Integer> wordCount = new HashMap<>();
+        for (char c : word.toCharArray()) {
+            wordCount.put(c, wordCount.getOrDefault(c, 0) + 1);
+        }
+
+        for (Map.Entry<Character, Integer> entry : letterCount.entrySet()) {
+            if (wordCount.getOrDefault(entry.getKey(), 0) < entry.getValue()) {
+                return false;
+            }
+        }
+        return true;
+    }
+
 
 }
 

@@ -1,6 +1,7 @@
 package com.wilfred.dsa.hashtable;
 
 import java.util.Arrays;
+import java.util.HashSet;
 
 public class Main {
     public static void main(String[] args) {
@@ -38,5 +39,16 @@ public class Main {
         System.out.println(myHasTable.longestConsecutiveSequence(longestUniquesNUms));
         System.out.println(myHasTable.intToRoman(58));
 
+
+        int [] majorityElementsNums ={3,2,3};
+        System.out.println(myHasTable.majorityElement(majorityElementsNums));
+
+
+        int []  containsNums ={1,2,3,1,2,3};
+        int k =2;
+        System.out.println(myHasTable.containsNearbyDuplicate(containsNums,k));
+        System.out.println(myHasTable.isAnagram("aacc","ccac"));
+        System.out.println(myHasTable.missingNumber(new int[]{3,0,1}));
+        System.out.println(myHasTable.wordPattern("abba","dog cat cat fish"));
     }
 }
