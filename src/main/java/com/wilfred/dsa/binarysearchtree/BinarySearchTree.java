@@ -61,4 +61,22 @@ public class BinarySearchTree {
         return false;
     }
 
+    private boolean contains(Node currentNode, int value) {
+        if (currentNode == null) {
+            return false;
+        }
+        if (currentNode.value == value) {
+            return true;
+        }
+        if (value < currentNode.value) {
+            return contains(currentNode.left, value);
+        } else {
+            return contains(currentNode.right, value);
+        }
+    }
+
+    public  boolean rContains(int value){
+        return  contains(root, value);
+    }
+
 }

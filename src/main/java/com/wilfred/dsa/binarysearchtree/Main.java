@@ -13,5 +13,6 @@ public class Main {
        binarySearchTree.insert(43);
         System.out.println(binarySearchTree.root.left.right.value);
         System.out.println(binarySearchTree.contains(101));
+        System.out.println(binarySearchTree.rContains(101));
     }
 }
