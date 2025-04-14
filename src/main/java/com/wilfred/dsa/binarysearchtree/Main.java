@@ -11,8 +11,12 @@ public class Main {
        binarySearchTree.insert(100);
        binarySearchTree.insert(55);
        binarySearchTree.insert(43);
+       binarySearchTree.rInsert(43);
         System.out.println(binarySearchTree.root.left.right.value);
         System.out.println(binarySearchTree.contains(101));
         System.out.println(binarySearchTree.rContains(101));
+       binarySearchTree.deleteNode(100);
+        System.out.println(binarySearchTree.root.left.right.value);
+
     }
 }
