@@ -85,11 +85,44 @@ public class BinarySearchTree {
         }
         if (value < currentNode.value) {
             currentNode.left = rInsert(currentNode.left, value);
-        } else {
+        } else if (value > currentNode.value) {
             currentNode.right = rInsert(currentNode.right, value);
         }
         return currentNode;
 
+    }
+
+    private Node rInsert(int[] nums, int left, int right) {
+        if (left > right) {
+            return null;
+        }
+        int mid = left + (right - left) / 2;
+        Node currentNode = new Node(mid);
+        currentNode.left = rInsert(nums, left, mid - 1);
+        currentNode.right = rInsert(nums, mid + 1, right);
+        return currentNode;
+    }
+
+    private Node invertTree(Node node) {
+        if (node == null) {
+            return null;
+        }
+        Node temp = node.left;
+        node.left = node.right;
+        node.right = temp;
+        invertTree(node.left);
+        invertTree(node.right);
+        return node;
+    }
+
+
+    private Node sortedArrayToBST(int[] nums, int left, int right) {
+        if (left > right) return null;
+        int mid = left + (right - left) / 2;
+        Node node = new Node(nums[mid]);
+        node.left = sortedArrayToBST(nums, left, mid - 1);
+        node.right = sortedArrayToBST(nums, mid + 1, right);
+        return node;
     }
 
     public void rInsert(int value) {
@@ -127,8 +160,8 @@ public class BinarySearchTree {
         }
 
         return currentNode;
-
     }
+
 
     private int minimumValue(Node currentNode) {
         while (currentNode.left != null) {
