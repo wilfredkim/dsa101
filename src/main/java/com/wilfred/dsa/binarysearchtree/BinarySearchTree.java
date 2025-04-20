@@ -1,5 +1,7 @@
 package com.wilfred.dsa.binarysearchtree;
 
+import java.util.*;
+
 public class BinarySearchTree {
     Node root;
 
@@ -10,6 +12,25 @@ public class BinarySearchTree {
 
         public Node(int value) {
             this.value = value;
+        }
+    }
+
+    public class TreeNode {
+        int val;
+        TreeNode left;
+        TreeNode right;
+
+        TreeNode() {
+        }
+
+        TreeNode(int val) {
+            this.val = val;
+        }
+
+        TreeNode(int val, TreeNode left, TreeNode right) {
+            this.val = val;
+            this.left = left;
+            this.right = right;
         }
     }
 
@@ -169,5 +190,229 @@ public class BinarySearchTree {
         }
         return currentNode.value;
     }
+
+
+    public ArrayList<Integer> BFS() {
+        Node current = root;
+        Queue<Node> queue = new LinkedList<>();
+        ArrayList<Integer> results = new ArrayList<>();
+        queue.add(current);
+        while (queue.size() > 0) {
+            current = queue.remove();
+            results.add(current.value);
+            if (current.left != null) {
+                queue.add(current.left);
+            }
+            if (current.right != null) {
+                queue.add(current.right);
+            }
+        }
+        return results;
+    }
+
+    public ArrayList<Integer> DFSPreOrder() {
+        ArrayList<Integer> results = new ArrayList<>();
+        //another way of writing this code
+        /*class Traverse {
+            Traverse(Node currentNode) {
+                results.add(currentNode.value);
+                if (currentNode.left != null) {
+                    new Traverse(currentNode.left);
+                }
+                if (currentNode.right != null) {
+                    new Traverse(currentNode.right);
+                }
+            }
+
+        }
+        new Traverse(root);*/
+        //using  recursion
+        preOrder(root, results);
+        return results;
+
+    }
+
+    private void preOrder(Node currentNode, ArrayList<Integer> results) {
+        if (currentNode == null) {
+            return;
+        }
+        results.add(currentNode.value);
+        if (currentNode.left != null) {
+            preOrder(currentNode.left, results);
+        }
+        if (currentNode.right != null) {
+            preOrder(currentNode.right, results);
+        }
+
+    }
+
+    public ArrayList<Integer> DFSPostOrder() {
+        ArrayList<Integer> results = new ArrayList<>();
+        //another way of writing this code
+        /*class Traverse {
+            Traverse(Node currentNode) {
+                if (currentNode.left != null) {
+                    new Traverse(currentNode.left);
+                }
+                if (currentNode.right != null) {
+                    new Traverse(currentNode.right);
+                }
+                results.add(currentNode.value);
+
+            }
+
+        }
+        new Traverse(root);*/
+        //using  recursion
+        postOrder(root, results);
+        return results;
+
+    }
+
+    private void postOrder(Node currentNode, ArrayList<Integer> results) {
+        if (currentNode == null) {
+            return;
+        }
+        if (currentNode.left != null) {
+            postOrder(currentNode.left, results);
+        }
+        if (currentNode.right != null) {
+            postOrder(currentNode.right, results);
+        }
+        results.add(currentNode.value);
+
+    }
+
+    public ArrayList<Integer> DFSInOrder() {
+        ArrayList<Integer> results = new ArrayList<>();
+        //another way of writing this code
+        /*class Traverse {
+            Traverse(Node currentNode) {
+                if (currentNode.left != null) {
+                    new Traverse(currentNode.left);
+                }
+                     results.add(currentNode.value);
+
+                if (currentNode.right != null) {
+                    new Traverse(currentNode.right);
+                }
+
+            }
+
+        }
+        new Traverse(root);*/
+        //using  recursion
+        inOrder(root, results);
+        return results;
+
+    }
+
+    private void inOrder(Node currentNode, ArrayList<Integer> results) {
+        if (currentNode == null) {
+            return;
+        }
+        if (currentNode.left != null) {
+            inOrder(currentNode.left, results);
+        }
+        results.add(currentNode.value);
+        if (currentNode.right != null) {
+            inOrder(currentNode.right, results);
+        }
+
+    }
+
+    public boolean isValidBST() {
+        ArrayList<Integer> results = new ArrayList<>();
+        inOrder(root, results);
+        for (int i = 0; i < results.size() - 1; i++) {
+            if (results.get(i + 1) < results.get(i)) {
+                return false;
+            }
+        }
+        return true;
+
+    }
+
+    public Integer kthSmallest(int k) {
+        ArrayList<Integer> results = new ArrayList<>();
+        inOrder(root, results);
+        if (k > results.size())
+            return null;
+        return results.get(k - 1);
+
+    }
+
+    public Integer kthSmallest2(int k) {
+        // Create an empty stack to keep track of nodes
+        Stack<Node> stack = new Stack<>();
+
+        // Start from the root of the BST
+        Node node = this.root;
+
+        // Continue as long as there are unprocessed nodes
+        while (!stack.isEmpty() || node != null) {
+
+            // Traverse to the leftmost node of the current subtree,
+            // pushing all the nodes onto the stack
+            while (node != null) {
+                stack.push(node);
+                node = node.left;
+            }
+
+            // Process nodes from the stack when no left children
+            node = stack.pop();
+
+            // Decrement k after each processed node
+            k -= 1;
+
+            // If k reaches 0, return the current node value
+            if (k == 0) {
+                return node.value;
+            }
+
+            // Move to the right child after a node has been processed
+            node = node.right;
+        }
+
+        // Return null if fewer than k nodes in the tree
+        return null;
+    }
+
+    public boolean isSameTree(Node p, Node q) {
+        if (p == null && q == null) return true;
+        if (p == null || q == null) return false;
+        if (p.value != q.value) return false;
+
+        return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+
+    }
+
+    public List<List<Integer>> levelOrderBottom() {
+        LinkedList<List<Integer>> results = new LinkedList<>();
+        if (root == null) return results;
+
+        Queue<Node> queue = new LinkedList<>();
+        queue.offer(root);
+
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size();
+            List<Integer> level = new ArrayList<>();
+
+            for (int i = 0; i < levelSize; i++) {
+                Node node = queue.poll();
+                level.add(node.value);
+                if (node.left != null) queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+
+            // Add at the beginning to build bottom-up order
+            results.addFirst(level);
+        }
+
+        return results;
+    }
+
+
+
 
 }
