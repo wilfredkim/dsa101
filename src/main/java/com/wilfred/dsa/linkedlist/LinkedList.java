@@ -754,9 +754,6 @@ public class LinkedList {
     }
 
 
-
-
-
     public static void main(String[] args) {
        /* Node head = new Node(2);
         head.next = new Node(2);
@@ -787,6 +784,114 @@ public class LinkedList {
         System.out.println("PART");
         printList(listNode1);
 
+    }
+
+
+    void bubbleSort() {
+        // If list length is less than 2, no need to sort
+        if (this.length < 2)
+            return;
+
+        // Initialize sortedUntil as null (nothing is sorted initially)
+        Node sortedUntil = null;
+
+        // Outer loop continues until sorted part reaches the second node
+        while (sortedUntil != this.head.next) {
+
+            // Start with the head node
+            Node current = this.head;
+
+            // Inner loop for each pass
+            while (current.next != sortedUntil) {
+
+                // Compare current node with next node
+                Node nextNode = current.next;
+
+                // If current node is greater, swap values
+                if (current.value > nextNode.value) {
+                    int temp = current.value;
+                    current.value = nextNode.value;
+                    nextNode.value = temp;
+                }
+
+                // Move to the next node
+                current = current.next;
+            }
+
+            // After each pass, the largest element is bubbled to the end
+            // Thus, update sortedUntil to point to the last sorted element
+            sortedUntil = current;
+        }
+    }
+
+    void selectionSort() {
+        if (this.length < 2)
+            return;
+        Node current = this.head;
+        while(current.next!=null){
+            Node smallest = current;
+            Node innerCurrent = current.next;
+            while (innerCurrent!=null){
+                if(innerCurrent.value< smallest.value){
+                    smallest = innerCurrent;
+                }
+                innerCurrent = innerCurrent.next;
+            }
+            if(smallest!= current){
+                int temp= smallest.value;
+                smallest.value= current.value;
+                current.value = temp;
+            }
+            current = current.next;
+        }
+    }
+
+    void insertionSort(){
+        Node current = this.head;
+        while (current.next!=null){
+            int temp = current.next.value;
+            int j = current.value;
+            while (temp< j){
+                current.next.value = j;
+                current.value = temp;
+
+            }
+
+        }
+    }
+
+    public void insertionSort2() {
+        if (length < 2) {
+            return; // List is already sorted
+        }
+
+        Node sortedListHead = head;
+        Node unsortedListHead = head.next;
+        sortedListHead.next = null;
+
+        while (unsortedListHead != null) {
+            Node current = unsortedListHead;
+            unsortedListHead = unsortedListHead.next;
+
+            if (current.value < sortedListHead.value) {
+                current.next = sortedListHead;
+                sortedListHead = current;
+            } else {
+                Node searchPointer = sortedListHead;
+                while (searchPointer.next != null && current.value > searchPointer.next.value) {
+                    searchPointer = searchPointer.next;
+                }
+                current.next = searchPointer.next;
+                searchPointer.next = current;
+            }
+        }
+
+        head = sortedListHead;
+        Node temp = head;
+        while (temp.next != null) {
+            temp = temp.next;
+        }
+        tail = temp;
     }
 
 
