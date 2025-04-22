@@ -1,6 +1,9 @@
 package com.wilfred.dsa.algorithms.sorts.selectionsort;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.TreeSet;
 
 public class SelectionSort {
     public static void main(String[] args) {
@@ -11,6 +14,11 @@ public class SelectionSort {
         int[] arr2 = {4, 2, 6, 5, 1, 3};
         selectionSort(arr2);
         System.out.println(Arrays.toString(arr2));
+
+        int[] arr3 = {4, 2, 6, 5, 1, 3};
+
+        System.out.println(( thirdMax(arr3)));
+
 
     }
     static void selectionSort(int[] array) {
@@ -28,6 +36,19 @@ public class SelectionSort {
             }
 
         }
+
+    }
+    public static int  thirdMax(int[] nums) {
+        TreeSet<Integer> set = new TreeSet<>(Collections.reverseOrder());
+        for (int num : nums) {
+            set.add(num);
+        }
+        if (set.size() < 3) {
+            return set.first();
+        }
+        set.pollFirst(); // remove the largest
+        set.pollFirst(); // remove the second largest
+        return set.first();
     }
 
     /*...
