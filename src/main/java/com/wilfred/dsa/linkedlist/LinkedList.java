@@ -9,6 +9,7 @@ public class LinkedList {
     private Node tail;
     int length;
 
+
     public LinkedList(int value) {
         Node newNode = new Node(value);
         head = newNode;
@@ -828,30 +829,30 @@ public class LinkedList {
         if (this.length < 2)
             return;
         Node current = this.head;
-        while(current.next!=null){
+        while (current.next != null) {
             Node smallest = current;
             Node innerCurrent = current.next;
-            while (innerCurrent!=null){
-                if(innerCurrent.value< smallest.value){
+            while (innerCurrent != null) {
+                if (innerCurrent.value < smallest.value) {
                     smallest = innerCurrent;
                 }
                 innerCurrent = innerCurrent.next;
             }
-            if(smallest!= current){
-                int temp= smallest.value;
-                smallest.value= current.value;
+            if (smallest != current) {
+                int temp = smallest.value;
+                smallest.value = current.value;
                 current.value = temp;
             }
             current = current.next;
         }
     }
 
-    void insertionSort(){
+    void insertionSort() {
         Node current = this.head;
-        while (current.next!=null){
+        while (current.next != null) {
             int temp = current.next.value;
             int j = current.value;
-            while (temp< j){
+            while (temp < j) {
                 current.next.value = j;
                 current.value = temp;
 
@@ -892,6 +893,78 @@ public class LinkedList {
             temp = temp.next;
         }
         tail = temp;
+    }
+
+    public void merge2(LinkedList otherList) {
+        Node combinedNode = new Node(0);
+        Node current =head;
+        Node otherNode =otherList.head;
+        while (current != null && otherNode != null) {
+            if (current.value < otherNode.value) {
+                combinedNode.next = current;
+                current = current.next;
+            } else {
+                combinedNode.next = otherNode;
+                otherNode = otherNode.next;
+            }
+            combinedNode = combinedNode.next;
+        }
+        if (current != null) {
+            combinedNode.next = current;
+        }else{
+            combinedNode.next = otherNode;
+
+        }
+        while (otherNode != null) {
+            combinedNode.next = otherNode;
+            otherNode = otherNode.next;
+        }
+        head = combinedNode.next;
+
+    }
+
+    public void merge(LinkedList otherList) {
+        // get the head node of the other linked list
+        Node otherHead = otherList.head;
+        // create a dummy node to serve as the head of the merged linked list
+        Node dummy = new Node(0);
+        // create a current node to keep track of the last node in the merged list
+        Node current = dummy;
+
+        // iterate through both input linked lists as long as they are not null
+        while (head != null && otherHead != null) {
+            // compare the values of the head nodes of the two lists
+            if (head.value < otherHead.value) {
+                // append the smaller node to the merged list and
+                //update the head of that list to its next node
+                current.next = head;
+                head = head.next;
+            } else {
+                // append the smaller node to the merged list and
+                //update the head of that list to its next node
+                current.next = otherHead;
+                otherHead = otherHead.next;
+            }
+            // update the "current" node to be the last node in the merged list
+            current = current.next;
+        }
+
+        // if either of the input lists still has nodes,
+        // append them to the end of the merged list
+        if (head != null) {
+            current.next = head;
+        } else {
+            current.next = otherHead;
+            // If current list is empty, update tail to last node of other list
+            // Otherwise, tail remains the last node of the current list
+            tail = otherList.tail;
+        }
+
+        // update the head of the current list to be the second node
+        // in the merged list (since the first node is the dummy node)
+        head = dummy.next;
+        // update the length of the current list to reflect the merged list
+        length += otherList.getLength();
     }
 
 
