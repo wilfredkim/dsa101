@@ -3,6 +3,7 @@ package com.wilfred.dsa.linkedlist;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LinkedList {
     private Node head;
@@ -201,11 +202,26 @@ public class LinkedList {
         return false;
     }
 
-    public Node findKthFromEnd(int k) {
-        int length = getLength();
-        if (head == null || length < k) {
-            return null;
+    public Node findKthFromEnd2(int k) {
+        Node slow = head;
+        Node fast = head;
+
+        for (int i = 0; i < k; i++) {
+            if (fast == null) {
+                return null;
+            }
+            fast = fast.next;
         }
+
+        while (fast != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+
+        return slow;
+    }
+
+    public Node findKthFromEnd(int k) {
         Node first = head;
         Node kthNode = head;
         for (int i = 0; i < k; i++) {
@@ -252,10 +268,67 @@ public class LinkedList {
     }
 
     public void partitionList(int x) {
+        // Step 1: Check for an empty list.
+        // If the list is empty, there is nothing
+        // to partition, so we exit the method.
+        if (head == null) return;
+
+        // Step 2: Create two dummy nodes.
+        // These dummy nodes act as placeholders
+        // to simplify list manipulation.
+        Node dummy1 = new Node(0);
+        Node dummy2 = new Node(0);
+
+        // Step 3: Initialize pointers for new lists.
+        // 'prev1' and 'prev2' will track the end nodes of
+        // the two lists that are being created.
+        Node prev1 = dummy1;
+        Node prev2 = dummy2;
+
+        // Step 4: Start with the head of the original list.
+        Node current = head;
+
+        // Step 5: Iterate through the original list.
+        while (current != null) {
+
+            // Step 6: Compare current node value with 'x'.
+            // Nodes are partitioned based on their value
+            // being less than or greater than/equal to 'x'.
+
+            // Step 6.1: If value is less than 'x',
+            // add node to the first list.
+            if (current.value < x) {
+                prev1.next = current;  // Link node to the end of the first list.
+                prev1 = current;       // Update the end pointer of the first list.
+            } else {
+                // Step 6.2: If value is greater or equal,
+                // add node to the second list.
+                prev2.next = current;  // Link node to the end of the second list.
+                prev2 = current;       // Update the end pointer of the second list.
+            }
+
+            // Move to the next node in the original list.
+            current = current.next;
+        }
+
+        // Step 7: Terminate the second list.
+        // This prevents cycles in the list.
+        prev2.next = null;
+
+        // Step 8: Connect the two lists.
+        // The first list is followed by the second list.
+        prev1.next = dummy2.next;
+
+        // Step 9: Update the head of the original list.
+        // The head now points to the start of the first list.
+        head = dummy1.next;
+    }
+
+
+    public void partitionList2(int x) {
         if (head == null || head.next == null) {
             return;
         }
-        Node start = head;
         Node end = head;
 
         // Find the last node
@@ -268,7 +341,6 @@ public class LinkedList {
         Node curr = head;
 
         while (curr != newEnd) {
-            System.out.println("end**************");
             if (curr.value >= x) {
                 // Move node to end
                 if (prev != null) {
@@ -299,20 +371,116 @@ public class LinkedList {
         }
     }
 
-    public void removeDuplicates() {
-        HashSet<Integer> hashSet = new HashSet<>();
-        if (head == null || length <= 0)
-            return;
-        hashSet.add(head.value);
-        while (head.next != null) {
-            if (hashSet.contains(head.value)) {
-                head = head.next.next;
+    public void removeDuplicatesPass() {
+        // Step 1: Create a Set to store unique node values.
+        // We initialize a HashSet, which allows for fast look-up
+        // to check for duplicates later on.
+        Set<Integer> values = new HashSet<>();
+
+        // Step 2: Initialize a Node variable 'previous' to null.
+        // 'previous' will help us unlink a node if it's a duplicate.
+        Node previous = null;
+
+        // Step 3: Initialize 'current' to point to the head node.
+        // 'current' will be used to iterate through the linked list.
+        Node current = head;
+
+        // Step 4: Begin iteration through the linked list.
+        // We will keep iterating until 'current' becomes null,
+        // indicating we have reached the end of the list.
+        while (current != null) {
+
+            // Step 5: Check for duplicates.
+            // We check if the current node's value is already in the set.
+            if (values.contains(current.value)) {
+
+                // Step 6: Remove the duplicate node.
+                // By setting 'previous.next' to 'current.next',
+                // we remove the link to 'current', effectively
+                // deleting it from the list.
+                previous.next = current.next;
+
+                // Step 7: Update the length of the list.
+                // Since we removed a node, we decrement the length by 1.
+                length -= 1;
+
             } else {
-                hashSet.add(head.value);
-                head = head.next;
+
+                // Step 8: Add unique value to set.
+                // If the current value is not a duplicate,
+                // we add it to the set for future reference.
+                values.add(current.value);
+
+                // Step 9: Update 'previous' node.
+                // We set 'previous' to the 'current' node, as we
+                // move forward in the list.
+                previous = current;
             }
 
+            // Step 10: Move to the next node.
+            // We update 'current' to point to the next node in the list,
+            // continuing our iteration.
+            current = current.next;
         }
+    }
+
+    public void removeDuplicates() {
+        Node current = head;
+        Node previous = null;
+        HashSet<Integer> integers = new HashSet<>();
+        while (current != null) {
+            if (integers.contains(current.value)) {
+                previous.next = current.next;
+                length--;
+            } else {
+                integers.add(current.value);
+                previous = current;
+            }
+
+            current = current.next;
+        }
+    }
+
+    public void reverseBetween(int startIndex, int endIndex) {
+        // Check: If linked list is empty, nothing to reverse.
+        // Exit the method.
+        if (head == null) return;
+
+        // Create a 'dummyNode' that precedes the head.
+        // Simplifies handling edge cases.
+        Node dummyNode = new Node(0);
+        dummyNode.next = head;
+
+        // 'previousNode' is used to navigate to the node
+        // right before our sublist begins.
+        Node previousNode = dummyNode;
+
+        // Move 'previousNode' to node just before sublist.
+        for (int i = 0; i < startIndex; i++) {
+            previousNode = previousNode.next;
+        }
+
+        // 'currentNode' marks the first node of sublist.
+        Node currentNode = previousNode.next;
+
+        // Loop reverses the section from startIndex to endIndex.
+        for (int i = 0; i < endIndex - startIndex; i++) {
+
+            // 'nodeToMove' is the node we'll move to sublist start.
+            Node nodeToMove = currentNode.next;
+
+            // Detach 'nodeToMove' from its current position.
+            currentNode.next = nodeToMove.next;
+
+            // Attach 'nodeToMove' at the beginning of the sublist.
+            nodeToMove.next = previousNode.next;
+
+            // Move 'nodeToMove' to the start of our sublist.
+            previousNode.next = nodeToMove;
+        }
+
+        // Adjust 'head' if the first node was part of sublist.
+        head = dummyNode.next;
     }
 
     public int binaryToDecimal() {
@@ -895,10 +1063,11 @@ public class LinkedList {
         tail = temp;
     }
 
+
     public void merge2(LinkedList otherList) {
         Node combinedNode = new Node(0);
-        Node current =head;
-        Node otherNode =otherList.head;
+        Node current = head;
+        Node otherNode = otherList.head;
         while (current != null && otherNode != null) {
             if (current.value < otherNode.value) {
                 combinedNode.next = current;
@@ -911,7 +1080,7 @@ public class LinkedList {
         }
         if (current != null) {
             combinedNode.next = current;
-        }else{
+        } else {
             combinedNode.next = otherNode;
 
         }
