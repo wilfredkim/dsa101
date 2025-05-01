@@ -1,11 +1,17 @@
 package com.wilfred.dsa;
 
 import java.util.*;
+import java.util.stream.IntStream;
 
 public class Problems {
     public static void main(String[] args) {
-        int arr[] = {5, 3, 8, 1, 6, 9};
-        System.out.println(Arrays.toString(findMaxMin(arr)));
+        int arr[] = {12, 35, 1, 10, 34, 1};
+        int arr2[] = {1, 1, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1};
+        int arr3[] = {1, 2, 0, 4, 3, 0, 5, 0};
+        Problems problems = new Problems();
+        System.out.println(problems.getSecondLargest(arr));
+        System.out.println(problems.maxConsecutiveCount(arr2));
+        problems.pushZerosToEnd(arr3);
     }
 
     public static int removeElement(int[] nums, int val) {
@@ -45,6 +51,128 @@ public class Problems {
         }
 
         return maxSum;
+    }
+
+    public int getSecondLargest(int[] arr) {
+        int largest = -1;
+        int secondLargest = -1;
+        for (int i : arr) {
+            if (i > largest) {
+                largest = i;
+            }
+        }
+        for (int i : arr) {
+            if (i > secondLargest && i != largest) {
+                secondLargest = i;
+            }
+        }
+        return secondLargest;
+
+    }
+
+    int maxProduct(int[] arr) {
+        int len = arr.length;
+        Arrays.sort(arr);
+        System.out.println("sorted array " + Arrays.toString(arr));
+        return Math.max(arr[0] * arr[1] * arr[len - 1],
+                arr[len - 1] * arr[len - 2] * arr[len - 3]);
+
+    }
+
+    public int maxConsecutiveCount(int[] arr) {
+        // code here
+
+        int count = 0;
+        int maxCount = 0;
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] == arr[i - 1]) {
+                count++;
+            } else {
+                maxCount = Math.max(maxCount, count);
+                count = 1;
+            }
+        }
+        return Math.max(maxCount, count);
+    }
+
+    void pushZerosToEnd(int[] arr) {
+        // code here
+        int len = arr.length;
+        int count = 0;
+        int[] nonZeros = new int[len];
+
+        for (int j : arr) {
+            if (j != 0) {
+                nonZeros[count++] = j;
+            }
+        }
+        while (count > len) {
+            nonZeros[count++] = 0;
+        }
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = nonZeros[i];
+        }
+
+
+    }
+
+    void reverseInGroups(int[] arr, int k) {
+        int n = arr.length;
+
+        for (int i = 0; i < n; i += k) {
+            int left = i;
+            int right = Math.min(i + k - 1, n - 1);
+
+            // Reverse the sub-array
+            while (left < right) {
+                int temp = arr[left];
+                arr[left] = arr[right];
+                arr[right] = temp;
+                left++;
+                right--;
+            }
+        }
+    }
+
+    public int[] mergeSort(int[] array) {
+        if (array.length == 1) {
+            return array;
+        }
+        int mid = array.length / 2;
+        int[] left = mergeSort(Arrays.copyOfRange(array, 0, mid));
+        int[] right = mergeSort(Arrays.copyOfRange(array, mid, array.length));
+        return merge(left, right);
+
+    }
+
+    int[] merge(int[] arr1, int[] arr2) {
+        int i = 0;
+        int j = 0;
+        int index = 0;
+        int[] combined = new int[arr1.length + arr2.length];
+        while (i < arr1.length && j < arr2.length) {
+            if (arr1[i] > arr2[j]) {
+                combined[index] = arr1[i];
+                i++;
+                index++;
+            } else {
+                combined[index] = arr2[j];
+                j++;
+                index++;
+            }
+
+        }
+        while (i < arr1.length) {
+            combined[index] = arr1[i];
+            i++;
+            index++;
+        }
+        while (j < arr2.length) {
+            combined[index] = arr2[j];
+            j++;
+            index++;
+        }
+        return combined;
     }
 
 

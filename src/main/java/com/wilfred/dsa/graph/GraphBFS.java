@@ -6,10 +6,9 @@ import java.util.List;
 import java.util.Queue;
 
 public class GraphBFS {
-    static boolean bfs(int start, List<Integer>[] adj, boolean[] visited)
-    {
+    static boolean bfs(int start, List<Integer>[] adj, boolean[] visited) {
         Queue<int[]> q = new LinkedList<>();
-        q.offer(new int[] { start, -1 });
+        q.offer(new int[]{start, -1});
         visited[start] = true;
 
         while (!q.isEmpty()) {
@@ -20,7 +19,7 @@ public class GraphBFS {
             for (int neighbor : adj[node]) {
                 if (!visited[neighbor]) {
                     visited[neighbor] = true;
-                    q.offer(new int[] { neighbor, node });
+                    q.offer(new int[]{neighbor, node});
                 }
                 // If visited and not the parent, cycle
                 // exists
@@ -31,8 +30,8 @@ public class GraphBFS {
         }
         return false;
     }
-    static boolean isCycle(int V, int[][] edges)
-    {
+
+    static boolean isCycle(int V, int[][] edges) {
         // Create adjacency list
         List<Integer>[] adj = constructadj(V, edges);
         boolean[] visited = new boolean[V];
@@ -46,9 +45,10 @@ public class GraphBFS {
         }
         return false;
     }
-    static List<Integer>[] constructadj(int V,
-                                        int[][] edges)
-    {
+
+
+
+    static List<Integer>[] constructadj(int V, int[][] edges) {
 
         List<Integer>[] adj = new ArrayList[V];
         for (int i = 0; i < V; i++) {

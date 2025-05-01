@@ -48,9 +48,7 @@ public class InsertionSort {
         // We cannot obtain a sum of target if the smallest value
         // in nums is greater than target / k or if the largest
         // value in nums is smaller than target / k.
-        if (
-                nums[start] > average_value || average_value > nums[nums.length - 1]
-        ) {
+        if (nums[start] > average_value || average_value > nums[nums.length - 1]) {
             return res;
         }
 

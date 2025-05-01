@@ -210,6 +210,27 @@ public class BinarySearchTree {
         return results;
     }
 
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        TreeNode current = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        List<Integer> results = new ArrayList<>();
+        List<List<Integer>> lists = new ArrayList<>();
+        queue.add(current);
+        while (queue.size() > 0) {
+            current = queue.remove();
+            results.add(current.val);
+            if (current.left != null) {
+                queue.add(current.left);
+            }
+            if (current.right != null) {
+                queue.add(current.right);
+            }
+            lists.add(results);
+        }
+        return lists;
+    }
+
+
     public ArrayList<Integer> DFSPreOrder() {
         ArrayList<Integer> results = new ArrayList<>();
         //another way of writing this code
@@ -411,8 +432,6 @@ public class BinarySearchTree {
 
         return results;
     }
-
-
 
 
 }
