@@ -12,6 +12,9 @@ public class Problems {
         System.out.println(problems.getSecondLargest(arr));
         System.out.println(problems.maxConsecutiveCount(arr2));
         problems.pushZerosToEnd(arr3);
+        int[][] aaarr = {{1, 2}, {1, 2}, {1, 1}, {1, 2}, {2, 2}};
+        System.out.println(":::::::::::::: " + problems.numEquivDominoPairs(aaarr));
+
     }
 
     public static int removeElement(int[] nums, int val) {
@@ -175,5 +178,51 @@ public class Problems {
         return combined;
     }
 
+    int[] addOne(int[] arr) {
+        // code here
+        int carry = 1;
+        for (int i = arr.length - 1; i >= 0; i--) {
+            int sum = arr[i] + carry;
+            arr[i] = sum % 10;
+            carry = sum / 10;
+        }
+        if (carry > 0) {
+            int[] newArr = new int[arr.length + 1];
+            newArr[0] = carry;
+            System.arraycopy(arr, 0, newArr, 1, arr.length);
+            return newArr;
+        }
+
+        return arr;
+
+
+    }
+
+
+    static int repeatedSumOfDigits(int N) {
+        int sum = 0;
+        while (N > 0 || sum > 9) {
+            if (N == 0) {
+                N = sum;
+                sum = 0;
+            }
+            sum += N % 10;
+            N = N / 10;
+        }
+        return sum;
+    }
+
+    public int numEquivDominoPairs(int[][] dominoes) {
+        int[] num = new int[100];
+        int ret = 0;
+        for (int[] domino : dominoes) {
+            int val = domino[0] < domino[1]
+                    ? domino[0] * 10 + domino[1]
+                    : domino[1] * 10 + domino[0];
+            ret += num[val];
+            num[val]++;
+        }
+        return ret;
+    }
 
 }
