@@ -1,7 +1,6 @@
 package com.wilfred.dsa;
 
 import java.util.*;
-import java.util.stream.IntStream;
 
 public class Problems {
     public static void main(String[] args) {
@@ -14,6 +13,7 @@ public class Problems {
         problems.pushZerosToEnd(arr3);
         int[][] aaarr = {{1, 2}, {1, 2}, {1, 1}, {1, 2}, {2, 2}};
         System.out.println(":::::::::::::: " + problems.numEquivDominoPairs(aaarr));
+        System.out.println(":::::::::::::: " + problems.lengthOfLongestSubstring("pwwkew"));
 
     }
 
@@ -223,6 +223,27 @@ public class Problems {
             num[val]++;
         }
         return ret;
+    }
+
+    public int lengthOfLongestSubstring(String s) {
+        if (s.length() <= 1) {
+            return s.length();
+        }
+        int max = 0;
+        HashMap<Character, Integer> charMap = new HashMap<>();
+        int left = 0;
+        for (int right = left; right < s.length(); right++) {
+            char current = s.toCharArray()[right];
+            if (charMap.containsKey(current) && charMap.get(current) >= left) {
+                left = charMap.getOrDefault(current,0) + 1;
+            }
+            charMap.put(current, right);
+
+            max = Math.max(max, right - left+1 );
+        }
+
+        return max;
+
     }
 
 }
