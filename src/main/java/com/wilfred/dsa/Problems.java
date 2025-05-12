@@ -15,6 +15,18 @@ public class Problems {
         System.out.println(":::::::::::::: " + problems.numEquivDominoPairs(aaarr));
         System.out.println(":::::::::::::: " + problems.lengthOfLongestSubstring("pwwkew"));
 
+        String palidrome = "aaabaaa";
+        String palidrome2 = "aabbaa";
+        int len = palidrome.length();
+        int len2 = palidrome2.length();
+        System.out.println("Mid index is  " + len / 2);
+        System.out.println("Index @ mid is " + palidrome.toCharArray()[len / 2]);
+        System.out.println("Mid index is  " + len2 / 2);
+        System.out.println("Index @ mid is " + palidrome2.toCharArray()[len2 / 2] + " and " + palidrome2.toCharArray()[(len2 / 2) - 1]);
+
+        System.out.println("is a palindrome:::::::::::::" + isPalindrome("A man, a plan, a canal: Panama"));
+        System.out.println("is a validPalindrome:::::::::::::" + validPalindrome("abc"));
+        System.out.println("backspaceCompare:::::::::::::" + backspaceCompare("a##c", "#a#c"));
     }
 
     public static int removeElement(int[] nums, int val) {
@@ -225,6 +237,7 @@ public class Problems {
         return ret;
     }
 
+
     public int lengthOfLongestSubstring(String s) {
         if (s.length() <= 1) {
             return s.length();
@@ -232,18 +245,141 @@ public class Problems {
         int max = 0;
         HashMap<Character, Integer> charMap = new HashMap<>();
         int left = 0;
-        for (int right = left; right < s.length(); right++) {
+        for (int right = 0; right < s.length(); right++) {
             char current = s.toCharArray()[right];
             if (charMap.containsKey(current) && charMap.get(current) >= left) {
-                left = charMap.getOrDefault(current,0) + 1;
+                left = charMap.getOrDefault(current, 0) + 1;
             }
             charMap.put(current, right);
 
-            max = Math.max(max, right - left+1 );
+            max = Math.max(max, right - left + 1);
         }
 
         return max;
 
     }
+
+    public static boolean isPalindrome(String s) {
+        if (s.length() <= 1) {
+            return true;
+        }
+        String cleanString = s.replaceAll("[^A-Za-z0-9]", "").toLowerCase();
+        int left = 0;
+        int right = cleanString.length() - 1;
+        char[] charArray = cleanString.toCharArray();
+        while (left < right) {
+            if (charArray[left] != charArray[right]) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+
+    }
+
+    public static boolean validPalindrome(String s) {
+        if (s.length() <= 1) return true;
+
+        char[] sCharArray = s.toCharArray();
+        int left = 0;
+        int right = s.length() - 1;
+
+        while (left < right) {
+            if (sCharArray[left] != sCharArray[right]) {
+                return validSubPalindrome(s, left + 1, right) || validSubPalindrome(s, left, right - 1);
+            }
+            left++;
+            right--;
+        }
+        return true;
+
+    }
+
+    public static boolean validSubPalindrome(String str, int left, int right) {
+        if (str.length() <= 1) {
+            return true;
+        }
+        char[] chars = str.toCharArray();
+        while (left < right) {
+            if (chars[left] != chars[right]) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+    }
+
+    public static boolean backspaceCompare(String s, String t) {
+        int p1 = s.length() - 1;
+        int p2 = t.length() - 1;
+
+        while (p1 >= 0 || p2 >= 0) {
+            if ((p1 >= 0 && s.charAt(p1) == '#') || (p2 >= 0 && t.charAt(p2) == '#')) {
+                if (p1 >= 0 && s.charAt(p1) == '#') {
+                    int backCount = 2;
+                    while (backCount > 0) {
+                        p1--;
+                        backCount--;
+                        if (p1 >= 0 && s.charAt(p1) == '#') {
+                            backCount += 2;
+                        }
+                    }
+                }
+
+                if (p2 >= 0 && t.charAt(p2) == '#') {
+                    int backCount = 2;
+                    while (backCount > 0) {
+                        p2--;
+                        backCount--;
+                        if (p2 >= 0 && t.charAt(p2) == '#') {
+                            backCount += 2;
+                        }
+                    }
+                }
+            } else {
+                char c1 = (p1 >= 0) ? s.charAt(p1) : '\0';
+                char c2 = (p2 >= 0) ? t.charAt(p2) : '\0';
+                if (c1 != c2) {
+                    return false;
+                }
+                p1--;
+                p2--;
+            }
+        }
+
+        return true;
+
+    }
+
+    public String buildString(String s) {
+        StringBuilder builder = new StringBuilder(s.length());
+        for (char ch : s.toCharArray()) {
+            if (ch == '#') {
+                if (builder.length() > 0) {
+                    builder.deleteCharAt(builder.length() - 1);
+                }
+            } else {
+                builder.append(ch);
+            }
+        }
+        return builder.toString();
+    }
+
+    public int[] twoSum(int[] nums, int target) {
+
+        HashMap<Integer, Integer> hashMap = new HashMap<>();
+        for (int i = 0; i < nums.length; i++) {
+            if (hashMap.containsKey(target - nums[i])) {
+                return new int[]{hashMap.getOrDefault(target - nums[i], 0), i};
+            } else {
+                hashMap.put(nums[i], i);
+            }
+        }
+        return new int[]{};
+
+    }
+
 
 }
