@@ -15,6 +15,7 @@ public class Problems {
         System.out.println(":::::::::::::: " + problems.numEquivDominoPairs(aaarr));
         System.out.println(":::::::::::::: " + problems.lengthOfLongestSubstring("pwwkew"));
 
+
         String palidrome = "aaabaaa";
         String palidrome2 = "aabbaa";
         int len = palidrome.length();
@@ -27,6 +28,14 @@ public class Problems {
         System.out.println("is a palindrome:::::::::::::" + isPalindrome("A man, a plan, a canal: Panama"));
         System.out.println("is a validPalindrome:::::::::::::" + validPalindrome("abc"));
         System.out.println("backspaceCompare:::::::::::::" + backspaceCompare("a##c", "#a#c"));
+
+        int[] height = new int[]{1, 8, 6, 2, 5, 4, 8, 3, 7};
+        int[] height2 = new int[]{0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1};
+        System.out.println("::::::::::max area:::: " + problems.maxArea(height));
+        int[] nums = new int[]{2, 7, 9, 3, 1};
+        System.out.println(":::::::::: trap: hhereee****::: " + problems.trap2(height2));
+
+        // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
     }
 
     public static int removeElement(int[] nums, int val) {
@@ -379,6 +388,99 @@ public class Problems {
         }
         return new int[]{};
 
+    }
+
+    public int maxArea(int[] height) {
+        if (height.length <= 1)
+            return 0;
+        int maxArea = 0;
+        int start = 0;
+        int end = height.length - 1;
+
+        while (start < end) {
+            int maxStart = height[start];
+            int maxEnd = height[end];
+            //width * len
+            int currentArea = Math.min(maxStart, maxEnd) * (end - start);
+            maxArea = Math.max(maxArea, currentArea);
+            if (maxStart < maxEnd) {
+                start++;
+            } else {
+                end--;
+            }
+
+        }
+        return maxArea;
+
+    }
+
+    public int trap(int[] height) {
+        //brute force
+        int count = 0;
+        int maxLeft = 0;
+        int maxRight = 0;
+        for (int left = 0; left < height.length; left++) {
+            maxLeft = Math.max(maxLeft, height[left]);
+            for (int right = left + 1; right < height.length; right++) {
+                maxRight = Math.max(maxRight, height[right]);
+            }
+            int currentWater = Math.min(maxLeft, maxRight) - height[left];
+            if (currentWater > 0) {
+                count += currentWater;
+            }
+            maxRight = 0;
+
+        }
+        return count;
+
+    }
+
+    public int trap2(int[] height) {
+        int count = 0;
+        int start = 0;
+        int maxStart = 0;
+        int maxEnd =0;
+        int end = height.length-1;
+        while (start < end) {
+
+            if (height[start] < height[end]) {
+                if(height[start]> maxStart){
+                    maxStart = height[start];
+                }else{
+                    count+=maxStart - height[start];
+                }
+                start++;
+            } else {
+                if(height[end]> maxEnd){
+                    maxEnd = height[end];
+                }else{
+                    count+=maxEnd - height[end];
+                }
+                end--;
+            }
+        }
+        return count;
+
+    }
+
+    public int minCapability(int[] nums, int k) {
+        if (nums.length <= 1)
+            return 0;
+
+        int min = Integer.MAX_VALUE;
+
+        for (int right = k; right < nums.length; right++) {
+            int maxLeft = nums[right - k];
+            int maxRight = nums[right];
+            System.out.println("Left:::::::::::::::::: " + maxLeft);
+            System.out.println("Right:::::::::::::::::: " + maxRight);
+            min = Math.min(min, Math.max(maxLeft, maxRight));
+            System.out.println("min:::::::::::::::::: " + min);
+            System.out.println("------------------");
+
+
+        }
+        return min;
     }
 
 

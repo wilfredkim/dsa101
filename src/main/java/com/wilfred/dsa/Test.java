@@ -21,4 +21,25 @@ public class Test {
         }
         return longest;
     }
+
+    int maxArea(int[] height) {
+        int start = 0;
+        int end = height.length - 1;
+        int max = 0;
+        while (start < end) {
+            int maxStart = height[start];
+            int maxEnd = height[end];
+
+            max = Math.max(max, (Math.min(maxStart, maxEnd) * (end - start)));
+
+            if (maxStart < maxEnd) {
+                start++;
+            } else {
+                end--;
+            }
+
+
+        }
+        return max;
+    }
 }
