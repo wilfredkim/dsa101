@@ -155,20 +155,73 @@ public class LinkedList {
         return temp;
     }
 
-    public void reverse() {
-        Node temp = head;
-        head = tail;
-        tail = temp;
-        Node after = temp;
-        Node before = null;
-        for (int i = 0; i < length; i++) {
-            after = temp;
-            temp.next = before;
-            after = temp;
-            before = after;
+
+    public Node reverse() {
+        if (head == null)
+            return null;
+
+        Node currentNode = head;
+        Node prev = null;
+        while (currentNode != null) {
+            Node next = currentNode.next;
+            currentNode.next = prev;
+            prev = currentNode;
+            currentNode = next;
+
+
         }
 
+        return prev;
+
     }
+
+    public ListNode reverseBetweenBestCode(ListNode head, int left, int right) {
+        if (head == null || left == right) return head;
+
+        int i = 1;
+        ListNode current = head;
+        ListNode start = head;
+
+        // Move current to the `left` position
+        while (i < left) {
+            start = current;
+            current = current.next;
+            i++;
+        }
+        ListNode prev = null;
+        ListNode tail = current;
+
+        // Reverse the sublist between left and right
+        while (i >= left && i <= right) {
+            ListNode nextNode = current.next;
+            current.next = prev;
+            prev = current;
+            current = nextNode;
+            i++;
+        }
+        start.next = prev;
+        tail.next = current;
+
+        // If reversing starts from head, return new head (prev)
+        if (left > 1) {
+            return head;
+        } else {
+            return prev;
+        }
+    }
+
+    public ListNode reverse(ListNode listNode) {
+        ListNode current = listNode;
+        ListNode prev = null;
+        while (current != null) {
+            ListNode next = current.next;
+            current.next = prev;
+            prev = current;
+            current = next;
+        }
+        return prev;
+    }
+
 
     public void getHead() {
         if (head == null) {
@@ -185,7 +238,6 @@ public class LinkedList {
             System.out.println("Tail: " + tail.value);
         }
     }
-
 
     public boolean hasLoop() {
         Node slow = head;
@@ -683,7 +735,7 @@ public class LinkedList {
 
     }
 
-    public static void printList(Node head) {
+    public void printList() {
         Node temp = head;
         while (temp != null) {
             System.out.print(temp.value + " -> ");
@@ -773,6 +825,49 @@ public class LinkedList {
         }
         slow.next = slow.next.next;
         return head;
+
+    }
+
+    public ListNode detectCycle(ListNode head) {
+        if (head == null)
+            return null;
+        ListNode current = head;
+        HashSet<ListNode> listNodes = new HashSet<>();
+        while (!listNodes.contains(current)) {
+            if (current.next == null) {
+                return null;
+            }
+            listNodes.add(current);
+            current = current.next;
+        }
+        return current;
+    }
+
+    public ListNode detectCycleUsingFloyds(ListNode head) {
+        if (head == null)
+            return null;
+        ListNode hare = head;
+        ListNode tortoise = head;
+        while (true) {
+            hare = hare.next;
+            tortoise = tortoise.next;
+            //check for tail value
+            if (hare == null || hare.next == null) {
+                return null;
+            } else {
+                hare = hare.next;
+            }
+            if (hare == tortoise) {
+                break;
+            }
+
+        }
+        ListNode p1 = head, p2 = tortoise;
+        while (p1!=p2){
+            p1 = p1.next;
+            p2 = p2.next;
+        }
+        return  p1;
 
     }
 

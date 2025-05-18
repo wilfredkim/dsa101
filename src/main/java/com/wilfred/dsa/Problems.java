@@ -34,6 +34,7 @@ public class Problems {
         System.out.println("::::::::::max area:::: " + problems.maxArea(height));
         int[] nums = new int[]{2, 7, 9, 3, 1};
         System.out.println(":::::::::: trap: hhereee****::: " + problems.trap2(height2));
+        System.out.println(":::::::::: trap: hhereee****::: " + problems.trap3(height2));
 
         // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
     }
@@ -439,28 +440,54 @@ public class Problems {
         int count = 0;
         int start = 0;
         int maxStart = 0;
-        int maxEnd =0;
-        int end = height.length-1;
+        int maxEnd = 0;
+        int end = height.length - 1;
         while (start < end) {
 
             if (height[start] < height[end]) {
-                if(height[start]> maxStart){
+                if (height[start] > maxStart) {
                     maxStart = height[start];
-                }else{
-                    count+=maxStart - height[start];
+                } else {
+                    count += maxStart - height[start];
                 }
                 start++;
             } else {
-                if(height[end]> maxEnd){
+                if (height[end] > maxEnd) {
                     maxEnd = height[end];
-                }else{
-                    count+=maxEnd - height[end];
+                } else {
+                    count += maxEnd - height[end];
                 }
                 end--;
             }
         }
         return count;
 
+    }
+
+    public int trap3(int[] height) {
+        int count = 0;
+        int start = 0;
+        int maxStart = 0;
+        int maxEnd = 0;
+        int end = height.length - 1;
+        while (start < end) {
+            maxStart = Math.max(maxStart, height[start]);
+            maxEnd = Math.max(maxEnd, height[end]);
+            if (maxStart < maxEnd) {
+                int currentWater = Math.min(maxStart, maxEnd) - height[start];
+                if (currentWater > 0) {
+                    count += currentWater;
+                }
+                start++;
+            } else {
+                int currentWater = Math.min(maxStart, maxEnd) - height[end];
+                if (currentWater > 0) {
+                    count += currentWater;
+                }
+                end--;
+            }
+        }
+        return count;
     }
 
     public int minCapability(int[] nums, int k) {
@@ -481,6 +508,22 @@ public class Problems {
 
         }
         return min;
+    }
+
+    public boolean isValid(String s) {
+        Stack<Character> stack = new Stack<>();
+        for (char c : s.toCharArray()) {
+            if (c == '(' || c == '{' || c == '[') {
+                stack.push(c);
+            } else {
+                if (!stack.isEmpty() &&(c == ')' && stack.peek() == '(') || (c == '}' && stack.peek() == '{') || (c == ']' && stack.peek() == '[')) {
+                    stack.pop();
+                } else {
+                    return false;
+                }
+            }
+        }
+        return stack.isEmpty();
     }
 
 

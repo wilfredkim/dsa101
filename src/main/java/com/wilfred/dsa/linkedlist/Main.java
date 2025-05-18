@@ -8,6 +8,10 @@ public class Main {
         myLinkedList.append(40);
         myLinkedList.append(50);
         System.out.println("\nLinked List:");
+        myLinkedList.printList();
+        myLinkedList.reverse();
+        System.out.println("\nReverse List:");
+        myLinkedList.printList();
         myLinkedList.rotate(4);
 
         /*myLinkedList.append(2);
