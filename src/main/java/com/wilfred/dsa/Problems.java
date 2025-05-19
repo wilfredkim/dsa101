@@ -35,6 +35,7 @@ public class Problems {
         int[] nums = new int[]{2, 7, 9, 3, 1};
         System.out.println(":::::::::: trap: hhereee****::: " + problems.trap2(height2));
         System.out.println(":::::::::: trap: hhereee****::: " + problems.trap3(height2));
+        System.out.println(":::::::::: minRemoveToMakeValid****::: " + problems.minRemoveToMakeValid("))(("));
 
         // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
     }
@@ -516,7 +517,7 @@ public class Problems {
             if (c == '(' || c == '{' || c == '[') {
                 stack.push(c);
             } else {
-                if (!stack.isEmpty() &&(c == ')' && stack.peek() == '(') || (c == '}' && stack.peek() == '{') || (c == ']' && stack.peek() == '[')) {
+                if (!stack.isEmpty() && (c == ')' && stack.peek() == '(') || (c == '}' && stack.peek() == '{') || (c == ']' && stack.peek() == '[')) {
                     stack.pop();
                 } else {
                     return false;
@@ -524,6 +525,39 @@ public class Problems {
             }
         }
         return stack.isEmpty();
+    }
+
+    public String minRemoveToMakeValid(String s) {
+        Stack<Integer> stack = new Stack<>();
+        StringBuilder sb = new StringBuilder(s);
+
+        for (int i = 0; i < sb.length(); i++) {
+            char c = sb.charAt(i);
+            if (c == '(') {
+                stack.push(i);
+            } else if (c == ')') {
+                if (!stack.isEmpty()) {
+                    stack.pop();
+                } else {
+                    sb.setCharAt(i, '*'); // mark for removal
+                }
+            }
+        }
+
+        // Mark unmatched opening brackets
+        while (!stack.isEmpty()) {
+            sb.setCharAt(stack.pop(), '*');
+        }
+
+        // Build final string without marked characters
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < sb.length(); i++) {
+            if (sb.charAt(i) != '*') {
+                result.append(sb.charAt(i));
+            }
+        }
+
+        return result.toString();
     }
 
 
