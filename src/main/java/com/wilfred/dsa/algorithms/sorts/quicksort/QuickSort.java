@@ -50,18 +50,19 @@ public class QuickSort {
         }
     }
 
-    public static int pivot(int[] array, int pivotIndex, int endIndex) {
-        int swapIndex = pivotIndex;
-        for (int i = pivotIndex + 1; i <= endIndex; i++) {
-            if (array[i] < array[pivotIndex]) {
-                swapIndex++;
-                swap(array, swapIndex, i);
+    public static int pivot(int[] array, int left, int right) {
+        int pivotElement = array[right];
+        int partitionIdx = left;
 
+        for (int j = left; j < right; j++) {
+            if (array[j] <= pivotElement) {
+                swap(array, partitionIdx, j);
+                partitionIdx++;
             }
-
         }
-        swap(array, pivotIndex, swapIndex);
-        return swapIndex;
+
+        swap(array, partitionIdx, right);
+        return partitionIdx;
 
     }
 

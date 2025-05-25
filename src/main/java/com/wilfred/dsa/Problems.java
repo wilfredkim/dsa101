@@ -36,6 +36,10 @@ public class Problems {
         System.out.println(":::::::::: trap: hhereee****::: " + problems.trap2(height2));
         System.out.println(":::::::::: trap: hhereee****::: " + problems.trap3(height2));
         System.out.println(":::::::::: minRemoveToMakeValid****::: " + problems.minRemoveToMakeValid("))(("));
+        System.out.println(":::::::::: findKthLargest****::: " + problems.findKthLargest(new int[]{3, 2, 1, 5, 6, 4}, 2));
+        String[] words = {"lc", "cl", "gg"};
+        System.out.println(":::::::::: longestPalindrome****::: " + problems.longestPalindrome(words));
+        System.out.println(":::::::::: searchRange****::: " + Arrays.toString(problems.searchRange(new int[]{5, 7, 7, 8, 8, 10}, 8)));
 
         // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
     }
@@ -289,6 +293,46 @@ public class Problems {
 
     }
 
+    public int[] searchRange(int[] nums, int target) {
+        if (nums.length == 0) {
+            return new int[]{-1, -1};
+        }
+        int leftPos = binarySearch(nums, 0, nums.length - 1, target);
+        if (leftPos == -1) {
+            return new int[]{-1, -1};
+        } else {
+            int startPos = leftPos;
+            int endPos = leftPos;
+            int temp1 = -1, temp2 = -1;
+            while (startPos != -1) {
+                temp1 = startPos;
+                startPos = binarySearch(nums, 0, startPos - 1, target);
+            }
+            startPos = temp1;
+            while (endPos != -1) {
+                temp2 = endPos;
+                endPos = binarySearch(nums, endPos + 1, nums.length - 1, target);
+            }
+            endPos = temp2;
+            return new int[]{startPos, endPos};
+        }
+    }
+    private int binarySearch(int[] nums, int left, int right, int target) {
+        if (nums.length == 0) {
+            return -1;
+        }
+        while (left <= right) {
+            int mid = (left + right) / 2;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] > target) {
+                right = mid - 1;
+            } else {
+                left = mid + 1;
+            }
+        }
+        return -1;
+    }
     public static boolean validPalindrome(String s) {
         if (s.length() <= 1) return true;
 
@@ -320,6 +364,49 @@ public class Problems {
             right--;
         }
         return true;
+    }
+
+    public int longestPalindrome(String[] words) {
+        int left = 0;
+        int right = words.length - 1;
+        StringBuilder results = new StringBuilder();
+        while (left < right) {
+            String leftWord = words[left];
+            String rightWord = words[right];
+            if (isAPalindrome(results + leftWord + rightWord)) {
+                results.append(leftWord).append(rightWord);
+                left++;
+                right--;
+            } else if (isAPalindrome(results + leftWord)) {
+                results.append(leftWord);
+                right--;
+            } else if (isAPalindrome(results + rightWord)) {
+                results.append(rightWord);
+                left++;
+            } else {
+                left++;
+                right--;
+            }
+
+        }
+        return results.length();
+
+
+    }
+
+    boolean isAPalindrome(String s) {
+        System.out.println("Checking word:::::::::::" + s);
+        int left = 0;
+        int right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left) != s.charAt(right)) {
+                return false;
+            }
+            left++;
+            right--;
+        }
+        return true;
+
     }
 
     public static boolean backspaceCompare(String s, String t) {
@@ -560,5 +647,50 @@ public class Problems {
         return result.toString();
     }
 
+    public int findKthLargest(int[] nums, int k) {
+        quickSort(nums, 0, nums.length - 1);
+        int idx = k - 1;
+        if (idx < 0) {
+            return -1;
+        }
+        return nums[idx];
+    }
+
+    public int findKthLargestUsingHoare(int[] nums, int k) {
+        int indexToFind = nums.length - k;
+        quickSort(nums, 0, nums.length - 1);
+        return nums[indexToFind];
+    }
+
+
+    void quickSort(int[] nums, int left, int right) {
+        if (left < right) {
+            int pivot = pivot(nums, left, right);
+            quickSort(nums, left, pivot - 1);
+            quickSort(nums, pivot + 1, right);
+        }
+    }
+
+    //quick sort
+    int pivot(int[] nums, int left, int right) {
+        int pivotElement = nums[right];
+        int partitionIdx = left;
+
+        for (int j = left; j < right; j++) {
+            if (nums[j] <= pivotElement) {
+                swap(nums, partitionIdx, j);
+                partitionIdx++;
+            }
+        }
+
+        swap(nums, partitionIdx, right);
+        return partitionIdx;
+    }
+
+    void swap(int[] nums, int left, int right) {
+        int temp = nums[left];
+        nums[left] = nums[right];
+        nums[right] = temp;
+    }
 
 }

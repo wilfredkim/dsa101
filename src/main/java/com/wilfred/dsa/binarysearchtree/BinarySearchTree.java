@@ -433,5 +433,23 @@ public class BinarySearchTree {
         return results;
     }
 
+    public int maxDepth(TreeNode root) {
+        return maxCount(root, 0);
+    }
+
+    private int maxCount(TreeNode root, int count) {
+        if (root == null) {
+            return count;
+        }
+        count++;
+       /* if (root.left != null) {
+            maxCount(root.left, count);
+        }
+        if (root.right != null) {
+            maxCount(root.right, count);
+        }*/
+
+        return Math.max(maxCount(root.left, count),maxCount(root.right, count));
+    }
 
 }
