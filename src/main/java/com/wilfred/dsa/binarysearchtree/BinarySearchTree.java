@@ -210,26 +210,6 @@ public class BinarySearchTree {
         return results;
     }
 
-    public List<List<Integer>> levelOrder(TreeNode root) {
-        TreeNode current = root;
-        Queue<TreeNode> queue = new LinkedList<>();
-        List<Integer> results = new ArrayList<>();
-        List<List<Integer>> lists = new ArrayList<>();
-        queue.add(current);
-        while (queue.size() > 0) {
-            current = queue.remove();
-            results.add(current.val);
-            if (current.left != null) {
-                queue.add(current.left);
-            }
-            if (current.right != null) {
-                queue.add(current.right);
-            }
-            lists.add(results);
-        }
-        return lists;
-    }
-
 
     public ArrayList<Integer> DFSPreOrder() {
         ArrayList<Integer> results = new ArrayList<>();
@@ -442,14 +422,82 @@ public class BinarySearchTree {
             return count;
         }
         count++;
-       /* if (root.left != null) {
-            maxCount(root.left, count);
-        }
-        if (root.right != null) {
-            maxCount(root.right, count);
-        }*/
+        return Math.max(maxCount(root.left, count), maxCount(root.right, count));
+    }
 
-        return Math.max(maxCount(root.left, count),maxCount(root.right, count));
+    public List<List<Integer>> levelOrder(TreeNode root) {
+        List<List<Integer>> results = new ArrayList<>();
+        if (root == null) {
+            return results;
+        }
+        TreeNode current = root;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(current);
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            int count = 0;
+            List<Integer> levels = new ArrayList<>();
+            while (count < len) {
+                current = queue.remove();
+                levels.add(current.val);
+                if (current.left != null)
+                    queue.offer(current.left);
+
+                if (current.right != null)
+                    queue.offer(current.right);
+                count++;
+            }
+            results.add(levels);
+
+        }
+        return results;
+    }
+
+    public List<Integer> rightSideView(TreeNode root) {
+        List<Integer> results = new ArrayList<>();
+        if (root == null)
+            return results;
+        Queue<TreeNode> queue = new LinkedList<>();
+        TreeNode current = root;
+        queue.offer(current);
+        while (!queue.isEmpty()) {
+            int len = queue.size();
+            int count = 1;
+            while (count <= len) {
+                current = queue.remove();
+                if (count == len) {
+                    results.add(current.val);
+                }
+                if (current.left != null) {
+                    queue.offer(current.left);
+                }
+                if (current.right != null) {
+                    queue.offer(current.right);
+                }
+                count++;
+            }
+        }
+        return results;
+    }
+
+    public List<Integer> rightSideViewDFS(TreeNode root) {
+        List<Integer> results = new ArrayList<>();
+        if (root == null)
+            return results;
+        results.add(root.val);
+        dfsRightSide(root.right, results);
+        return  results;
+    }
+
+    void dfsRightSide(TreeNode root, List<Integer> results) {
+        if (root == null) {
+            return;
+        }
+        results.add(root.val);
+        if(root.right!=null){
+            dfsRightSide(root.right, results);
+        }
+
     }
 
 }
