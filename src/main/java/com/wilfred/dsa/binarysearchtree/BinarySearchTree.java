@@ -1,5 +1,7 @@
 package com.wilfred.dsa.binarysearchtree;
 
+import com.sun.source.tree.Tree;
+
 import java.util.*;
 
 public class BinarySearchTree {
@@ -484,20 +486,68 @@ public class BinarySearchTree {
         List<Integer> results = new ArrayList<>();
         if (root == null)
             return results;
-        results.add(root.val);
-        dfsRightSide(root.right, results);
-        return  results;
+        dfsRightSide(root, 0, results);
+        return results;
     }
 
-    void dfsRightSide(TreeNode root, List<Integer> results) {
+    void dfsRightSide(TreeNode root, int currentLevel, List<Integer> results) {
         if (root == null) {
             return;
         }
-        results.add(root.val);
-        if(root.right!=null){
-            dfsRightSide(root.right, results);
+        if (currentLevel >= results.size()) {
+            results.add(root.val);
+        }
+        if (root.right != null) {
+            dfsRightSide(root.right, currentLevel + 1, results);
+        }
+        if (root.left != null) {
+            dfsRightSide(root.left, currentLevel + 1, results);
         }
 
     }
 
+
+    public int countNodes(TreeNode root) {
+        if (root == null)
+            return 0;
+        Queue<TreeNode> queue = new LinkedList<>();
+        TreeNode current = root;
+        int count = 0;
+        queue.offer(current);
+        while (!queue.isEmpty()) {
+            current = queue.remove();
+            count++;
+            if (current.left != null) {
+                queue.offer(current.left);
+            }
+            if (current.right != null) {
+                queue.offer(current.right);
+            }
+
+
+        }
+        return count;
+
+    }
+
+    public boolean isValidBST(TreeNode root) {
+        if (root == null) {
+            return true;
+        }
+
+        return preOrder(root, Long.MIN_VALUE, Long.MAX_VALUE);
+
+
+    }
+
+    boolean preOrder(TreeNode root, long minValue, long maxValue) {
+        if (root == null) {
+            return true;
+        }
+        if (root.val <= minValue || root.val >= maxValue) {
+            return false;
+        }
+
+        return preOrder(root.left, minValue, root.val) && preOrder(root.right, root.val, maxValue);
+    }
 }
