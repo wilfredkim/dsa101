@@ -693,4 +693,37 @@ public class Problems {
         nums[right] = temp;
     }
 
+    public static int numOfMinutes(int n, int headID, int[] managers, int[] informTime) {
+        List<List<Integer>> adjList = new ArrayList<>();
+
+        // Initialize adjacency list
+        for (int i = 0; i < n; i++) {
+            adjList.add(new ArrayList<>());
+        }
+
+        // Build the adjacency list (manager -> list of subordinates)
+        for (int employee = 0; employee < n; employee++) {
+            int manager = managers[employee];
+            if (manager != -1) {
+                adjList.get(manager).add(employee);
+            }
+        }
+
+        return dfs(headID, adjList, informTime);
+    }
+
+    private static int dfs(int currentId, List<List<Integer>> adjList, int[] informTime) {
+        List<Integer> subordinates = adjList.get(currentId);
+        if (subordinates.isEmpty()) {
+            return 0;
+        }
+
+        int max = 0;
+        for (int subordinate : subordinates) {
+            max = Math.max(max, dfs(subordinate, adjList, informTime));
+        }
+
+        return max + informTime[currentId];
+    }
+
 }

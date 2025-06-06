@@ -1,11 +1,22 @@
 package com.wilfred.dsa.graph;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.Stack;
-import java.util.Vector;
+import java.util.*;
 
 public class GraphDFS {
+
+
+
+    public static void traversalDFS(int vertex, List<List<Integer>> graph, List<Integer> values, boolean[] seen) {
+        values.add(vertex);
+        seen[vertex] = true;
+
+        List<Integer> connections = graph.get(vertex);
+        for (int connection : connections) {
+            if (!seen[connection]) {
+                traversalDFS(connection, graph, values, seen);
+            }
+        }
+    }
     int V; //Number of Vertices
     LinkedList<Integer>[] adj; // adjacency lists
 

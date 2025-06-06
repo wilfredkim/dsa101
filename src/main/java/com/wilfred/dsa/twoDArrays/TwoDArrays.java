@@ -1,9 +1,6 @@
 package com.wilfred.dsa.twoDArrays;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class TwoDArrays {
 
@@ -140,7 +137,62 @@ public class TwoDArrays {
         for (int[] dir : directions) {
             int newRow = row + dir[0];
             int newCol = col + dir[1];
-            dfsCountIslands(matrix, newRow, newCol,directions);
+            dfsCountIslands(matrix, newRow, newCol, directions);
         }
     }
+
+    public int orangesRotting(int[][] grid) {
+        if (grid == null)
+            return 0;
+        int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+        final int FRESH_ORANGE = 1;
+        final int ROTTEN_ORANGE = 2;
+        Queue<int[]> queue = new LinkedList<>();
+        int freshOrangesCount = 0;
+
+        int rowLen = grid.length;
+        int colLen = grid[0].length;
+        for (int row = 0; row < rowLen; row++) {
+            for (int col = 0; col < colLen; col++) {
+                if (grid[row][col] == ROTTEN_ORANGE) {
+                    queue.offer(new int[]{row, col});
+                }
+                if (grid[row][col] == FRESH_ORANGE) {
+                    freshOrangesCount++;
+                }
+
+            }
+        }
+        int queueSize = queue.size();
+        int minutes = 0;
+        while (!queue.isEmpty()) {
+            if (queueSize == 0) {
+                minutes++;
+                queueSize = queue.size();
+            }
+            int[] currentOrange = queue.poll();
+            queueSize--;
+            int currentRowOrange = currentOrange[0];
+            int currentColOrange = currentOrange[1];
+            for (int[] dir : directions) {
+                int nextRowOrange = currentRowOrange + dir[0];
+                int nextColOrange = currentColOrange + dir[1];
+                if (nextRowOrange < 0 || nextRowOrange >= rowLen || nextColOrange < 0 || nextColOrange >= colLen) {
+                    continue;
+                }
+                if (grid[nextRowOrange][nextColOrange] == FRESH_ORANGE) {
+                    grid[nextRowOrange][nextColOrange] = ROTTEN_ORANGE;
+                    freshOrangesCount--;
+                    queue.offer(new int[]{nextRowOrange, nextColOrange});
+                }
+            }
+
+        }
+        if (freshOrangesCount > 0)
+            return -1;
+        return minutes;
+
+    }
+
+
 }

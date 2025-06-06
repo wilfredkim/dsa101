@@ -1,11 +1,32 @@
 package com.wilfred.dsa.graph;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 public class GraphBFS {
+    public static List<Integer> traversalBFS(List<List<Integer>> graph) {
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> seen = new HashSet<>();
+        List<Integer> values = new ArrayList<>();
+
+        queue.offer(0);
+
+        while (!queue.isEmpty()) {
+            int vertex = queue.poll();
+
+            if (!seen.contains(vertex)) {
+                values.add(vertex);
+                seen.add(vertex);
+
+                for (int neighbor : graph.get(vertex)) {
+                    if (!seen.contains(neighbor)) {
+                        queue.offer(neighbor);
+                    }
+                }
+            }
+        }
+
+        return values;
+    }
     static boolean bfs(int start, List<Integer>[] adj, boolean[] visited) {
         Queue<int[]> q = new LinkedList<>();
         q.offer(new int[]{start, -1});
@@ -45,6 +66,8 @@ public class GraphBFS {
         }
         return false;
     }
+
+
 
 
 
