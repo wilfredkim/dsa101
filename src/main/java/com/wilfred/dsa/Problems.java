@@ -42,6 +42,9 @@ public class Problems {
         System.out.println(":::::::::: searchRange****::: " + Arrays.toString(problems.searchRange(new int[]{5, 7, 7, 8, 8, 10}, 8)));
 
         // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
+        int[][] prerequisites = {{1, 0}};
+        System.out.println(":::::::::: canFinish****::: " + problems.canFinish(2, prerequisites));
+
     }
 
     public static int removeElement(int[] nums, int val) {
@@ -317,6 +320,7 @@ public class Problems {
             return new int[]{startPos, endPos};
         }
     }
+
     private int binarySearch(int[] nums, int left, int right, int target) {
         if (nums.length == 0) {
             return -1;
@@ -333,6 +337,7 @@ public class Problems {
         }
         return -1;
     }
+
     public static boolean validPalindrome(String s) {
         if (s.length() <= 1) return true;
 
@@ -726,4 +731,137 @@ public class Problems {
         return max + informTime[currentId];
     }
 
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        List<List<Integer>> adjList = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            adjList.add(new ArrayList<>());
+        }
+        for (int[] preq : prerequisites) {
+            adjList.get(preq[1]).add(preq[0]);
+        }
+        // Check for cycles using BFS for each node
+        for (int v = 0; v < numCourses; v++) {
+            Queue<Integer> queue = new LinkedList<>();
+            boolean[] seen = new boolean[numCourses];
+            // Add immediate neighbors
+            queue.addAll(adjList.get(v));
+
+            while (!queue.isEmpty()) {
+                int current = queue.poll();
+                seen[current] = true;
+
+                if (current == v) {
+                    return false; // Cycle detected
+                }
+
+                for (int neighbor : adjList.get(current)) {
+                    if (!seen[neighbor]) {
+                        queue.offer(neighbor);
+                    }
+                }
+            }
+        }
+
+        return true; // No cycles found
+    }
+
+    public boolean canFinishTopologicalSort(int numCourses, int[][] prerequisites) {
+        int[] inDegree = new int[numCourses];
+        List<List<Integer>> adjList = new ArrayList<>();
+        for (int i = 0; i < numCourses; i++) {
+            adjList.add(new ArrayList<>());
+        }
+        for (int[] preq : prerequisites) {
+            inDegree[preq[0]]++;
+            adjList.get(preq[1]).add(preq[0]);
+        }
+        Stack<Integer> stack = new Stack<>();
+        for (int i = 0; i < inDegree.length; i++) {
+            if (inDegree[i] == 0) {
+                stack.push(i);
+            }
+        }
+        int count = 0;
+        while (!stack.isEmpty()) {
+            int current = stack.pop();
+            count++;
+            for (int i = 0; i < prerequisites.length; i++) {
+                int[] pair = prerequisites[i];
+                if (pair[1] == current) {
+                    inDegree[pair[0]]--;
+                    if (inDegree[pair[0]] == 0) {
+                        stack.push(pair[0]);
+                    }
+                }
+            }
+        }
+        return count == numCourses;
+    }
+
+    //using dijkstrai's algorithm
+    public int networkDelayTime(int[][] times, int n, int k) {
+        double[] distances = new double[n];
+        Arrays.fill(distances, Double.POSITIVE_INFINITY);
+        List<List<int[]>> adjList = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            adjList.add(new ArrayList<>());
+        }
+        //note values start with 1 and indexs start from 0 that why we are subtracting 1
+        distances[k - 1] = 0;
+        // 4. Min-heap priority queue (Dijkstra)
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>(Comparator.comparingDouble(i -> distances[i]));
+        minHeap.offer(k - 1);
+        for (int i = 0; i < times.length; i++) {
+            int source = times[i][0];
+            int target = times[i][1];
+            int weight = times[i][2];
+            adjList.get(source - 1).add(new int[]{target - 1, weight});
+        }
+        while (!minHeap.isEmpty()) {
+            int currentVertex = minHeap.poll();
+            List<int[]> adjacents = adjList.get(currentVertex);
+            for (int[] neighbor : adjacents) {
+                int neighborVertex = neighbor[0];
+                int weight = neighbor[1];
+                if (distances[currentVertex] + weight < distances[neighborVertex]) {
+                    distances[neighborVertex] = distances[currentVertex] + weight;
+                    minHeap.offer(neighborVertex);
+                }
+
+            }
+        }
+        double maxTime = Arrays.stream(distances).max().getAsDouble();
+        return maxTime == Double.POSITIVE_INFINITY ? -1 : (int) maxTime;
+    }
+
+    //using bellman's ford  algorithm
+    public int networkDelayTimeBellmanFord(int[][] times, int n, int k) {
+        //using bellman's ford  algorithm
+
+        double[] distances = new double[n];
+        Arrays.fill(distances, Double.POSITIVE_INFINITY);
+        distances[k - 1] = 0;
+        for (int i = 0; i < n - 1; i++) {
+            //track if values have changed!
+            int count = 0;
+            for (int j = 0; j < times.length; j++) {
+                int source = times[j][0];
+                int target = times[j][1];
+                int weight = times[j][2];
+                if (distances[source] + weight < distances[target]) {
+                    distances[target] = distances[source] + weight;
+                    count++;
+                }
+            }
+            if (count == 0) {
+                break;
+            }
+
+        }
+        double maxTime = Arrays.stream(distances).max().getAsDouble();
+        return maxTime == Double.POSITIVE_INFINITY ? -1 : (int) maxTime;
+    }
 }
+
+
+
