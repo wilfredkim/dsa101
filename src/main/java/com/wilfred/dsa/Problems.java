@@ -861,6 +861,93 @@ public class Problems {
         double maxTime = Arrays.stream(distances).max().getAsDouble();
         return maxTime == Double.POSITIVE_INFINITY ? -1 : (int) maxTime;
     }
+
+    public int minCostClimbingStairs(int[] cost) {
+        int len = cost.length;
+        // return Math.min(minCost(len - 1, cost, dp), minCost(len - 2, cost, dp));
+        if (len == 0)
+            return 0;
+        if (len == 1) {
+            return cost[0];
+        }
+        int dpOne = cost[0];
+        int dpTwo = cost[1];
+        for (int i = 2; i < len; i++) {
+            int current = cost[i] + Math.min(dpOne, dpTwo);
+            dpOne = dpTwo;
+            dpTwo = current;
+
+        }
+        return Math.min(dpOne, dpTwo);
+    }
+
+    public int minCost(int n, int[] cost, int[] dp) {
+        if (n < 0) {
+            return 0;
+        }
+        if (n == 0 || n == 1) {
+            return cost[n];
+        }
+        if (dp[n] != 0) {
+            return dp[n];
+        }
+        dp[n] = cost[n] + Math.min(minCost(n - 1, cost, dp), minCost(n - 2, cost, dp));
+        return dp[n];
+    }
+    private static final int[][] DIRECTIONS = {
+            {-2, -1}, {-2, 1}, {-1, 2}, {1, 2},
+            {2, 1}, {2, -1}, {1, -2}, {-1, -2}
+    };
+    //using recursive
+    public double knightProbability(int n, int k, int row, int column) {
+        if (row < 0 || row >= n || column < 0 || column >= n) {
+            return 0;
+        }
+        if (k == 0) {
+            return 1;
+        }
+        double result = 0;
+
+        for (int[] dir : DIRECTIONS) {
+            int newRow = row + dir[0];
+            int newCol = column + dir[1];
+            result += knightProbability(n, k - 1, newRow, newCol) / 8.0;
+        }
+
+        return result;
+    }
+    //using memoization
+    public double knightProbability2(int n, int k, int row, int column){
+        double[][][] dp = new double[n][n][k + 1];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                for (int m = 0; m <= k; m++) {
+                    dp[i][j][m] = -1.0;
+                }
+            }
+        }
+
+        return recurse(n, k, row, column, dp);
+    }
+
+    private  double recurse(int n, int k, int row, int column, double[][][] dp) {
+        // If outside board
+        if (row < 0 || row >= n || column < 0 || column >= n) return 0;
+
+        // Base case: no more moves
+        if (k == 0) return 1;
+
+        // Return memoized value if already computed
+        if (dp[row][column][k] != -1.0) return dp[row][column][k];
+
+        double response = 0;
+        for (int[] dir : DIRECTIONS) {
+            response += recurse(n, k - 1, row + dir[0], column + dir[1], dp) / 8.0;
+        }
+
+        dp[row][column][k] = response;
+        return response;
+    }
 }
 
 
