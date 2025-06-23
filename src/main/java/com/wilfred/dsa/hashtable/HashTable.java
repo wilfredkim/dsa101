@@ -461,6 +461,7 @@ public class HashTable {
         return "";
 
     }
+
     private static boolean isCompletingWord(String word, Map<Character, Integer> letterCount) {
         Map<Character, Integer> wordCount = new HashMap<>();
         for (char c : word.toCharArray()) {
@@ -474,6 +475,8 @@ public class HashTable {
         }
         return true;
     }
+
+
 
 
 }

@@ -44,6 +44,8 @@ public class Problems {
         // System.out.println("::::::::::min capacity:::: " + problems.minCapability(nums, 2));
         int[][] prerequisites = {{1, 0}};
         System.out.println(":::::::::: canFinish****::: " + problems.canFinish(2, prerequisites));
+        int[] numz = {87, 68, 91, 86, 58, 63, 43, 98, 6, 40};
+        System.out.println(":::::::::: maximumDifference****::: " + problems.maximumDifference(numz));
 
     }
 
@@ -894,10 +896,12 @@ public class Problems {
         dp[n] = cost[n] + Math.min(minCost(n - 1, cost, dp), minCost(n - 2, cost, dp));
         return dp[n];
     }
+
     private static final int[][] DIRECTIONS = {
             {-2, -1}, {-2, 1}, {-1, 2}, {1, 2},
             {2, 1}, {2, -1}, {1, -2}, {-1, -2}
     };
+
     //using recursive
     public double knightProbability(int n, int k, int row, int column) {
         if (row < 0 || row >= n || column < 0 || column >= n) {
@@ -916,8 +920,9 @@ public class Problems {
 
         return result;
     }
+
     //using memoization
-    public double knightProbability2(int n, int k, int row, int column){
+    public double knightProbability2(int n, int k, int row, int column) {
         double[][][] dp = new double[n][n][k + 1];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < n; j++) {
@@ -930,7 +935,7 @@ public class Problems {
         return recurse(n, k, row, column, dp);
     }
 
-    private  double recurse(int n, int k, int row, int column, double[][][] dp) {
+    private double recurse(int n, int k, int row, int column, double[][][] dp) {
         // If outside board
         if (row < 0 || row >= n || column < 0 || column >= n) return 0;
 
@@ -948,6 +953,117 @@ public class Problems {
         dp[row][column][k] = response;
         return response;
     }
+
+    public int maximumDifference(int[] nums) {
+        int i = nums[0];
+        int max = Integer.MIN_VALUE;
+        for (int j = 1; j < nums.length; j++) {
+            if (nums[j] > i) {
+                max = Math.max(max, nums[j] - i);
+            } else {
+                i = nums[j];
+            }
+        }
+        if (max == Integer.MIN_VALUE) {
+            return -1;
+        }
+        return max;
+
+    }
+
+    public void solveSudoku(char[][] board) {
+        int n = board.length;
+        HashMap<Character, Boolean>[] rows = new HashMap[n];
+        HashMap<Character, Boolean>[] cols = new HashMap[n];
+        HashMap<Character, Boolean>[] boxes = new HashMap[n];
+        for (int i = 0; i < n; i++) {
+            rows[i] = new HashMap<>();
+            cols[i] = new HashMap<>();
+            boxes[i] = new HashMap<>();
+        }
+        // Initialize maps with existing board values
+        for (int r = 0; r < n; r++) {
+            for (int c = 0; c < n; c++) {
+                if (board[r][c] != '.') {
+                    char val = board[r][c];
+                    int boxId = getBoxId(r, c);
+
+                    rows[r].put(val, true);
+                    cols[c].put(val, true);
+                    boxes[boxId].put(val, true);
+                }
+            }
+        }
+        setBackTrack(board, boxes, rows, cols, 0, 0);
+    }
+
+    private int getBoxId(int row, int col) {
+        return (row / 3) * 3 + (col / 3);
+    }
+
+    private boolean setBackTrack(
+            char[][] board,
+            Map<Character, Boolean>[] boxes,
+            Map<Character, Boolean>[] rows,
+            Map<Character, Boolean>[] cols,
+            int r,
+            int c
+    ) {
+        int n = board.length;
+
+        if (r == n) {
+            // Entire board is filled correctly
+            return true;
+        }
+
+        // Move to next row if column limit is reached
+        if (c == n) {
+            return setBackTrack(board, boxes, rows, cols, r + 1, 0);
+        }
+
+        // If the current cell is filled, skip to next
+        if (board[r][c] != '.') {
+            return setBackTrack(board, boxes, rows, cols, r, c + 1);
+        }
+
+        // Try digits 1 through 9
+        for (char num = '1'; num <= '9'; num++) {
+            int boxId = getBoxId(r, c);
+            Map<Character, Boolean> box = boxes[boxId];
+            Map<Character, Boolean> row = rows[r];
+            Map<Character, Boolean> col = cols[c];
+
+            if (isValid(box, row, col, num)) {
+                // Place the number
+                board[r][c] = num;
+                box.put(num, true);
+                row.put(num, true);
+                col.put(num, true);
+
+                // Recurse to next cell
+                if (setBackTrack(board, boxes, rows, cols, r, c + 1)) {
+                    return true;
+                }
+
+                // Backtrack
+                board[r][c] = '.';
+                box.remove(num);
+                row.remove(num);
+                col.remove(num);
+            }
+        }
+
+        return false; // No valid number found
+    }
+
+
+    private boolean isValid(Map<Character, Boolean> box, Map<Character, Boolean> row, Map<Character, Boolean> col, char num) {
+        return !box.containsKey(num) &&
+                !row.containsKey(num) &&
+                !col.containsKey(num);
+    }
+
+
 }
 
 
