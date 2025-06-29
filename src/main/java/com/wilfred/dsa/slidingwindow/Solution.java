@@ -4,6 +4,8 @@ import java.util.*;
 
 public class Solution {
 
+
+
     public int findLength(int[] nums, int k) {
 
         int current = 0;
@@ -168,7 +170,7 @@ public class Solution {
             count++;
         }
         for (int i = k; i < s.length(); i++) {
-            int x = (i-k);
+            int x = (i - k);
             String substring = s.substring((x), i);
             if (isUnique(substring)) {
 
@@ -184,9 +186,9 @@ public class Solution {
     static boolean isUnique(String sub) {
         int start = 0;
         int end = sub.length() - 1;
-        while (end >start) {
-            System.out.println("Char end "+ sub.charAt(end));
-            System.out.println("Char start "+ sub.charAt(start));
+        while (end > start) {
+            System.out.println("Char end " + sub.charAt(end));
+            System.out.println("Char start " + sub.charAt(start));
             if (sub.charAt(end) == sub.charAt(start)) {
                 return false;
             }
