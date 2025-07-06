@@ -46,7 +46,7 @@ public class Problems {
         System.out.println(":::::::::: canFinish****::: " + problems.canFinish(2, prerequisites));
         int[] numz = {87, 68, 91, 86, 58, 63, 43, 98, 6, 40};
         System.out.println(":::::::::: maximumDifference****::: " + problems.maximumDifference(numz));
-        System.out.println(":::::::::: numSubseq****::: " + problems.numSubseq(new int[]{3,3,6,8},10));
+        System.out.println(":::::::::: numSubseq****::: " + problems.numSubseq(new int[]{3, 3, 6, 8}, 10));
 
     }
 
@@ -1065,7 +1065,6 @@ public class Problems {
     }
 
 
-
     public int numSubseq(int[] nums, int target) {
         final int MOD = 1_000_000_007;
         int n = nums.length;
@@ -1097,6 +1096,9 @@ public class Problems {
 
 
     }
+
+
+
 
 
 }
