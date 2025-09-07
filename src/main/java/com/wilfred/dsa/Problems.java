@@ -47,6 +47,9 @@ public class Problems {
         int[] numz = {87, 68, 91, 86, 58, 63, 43, 98, 6, 40};
         System.out.println(":::::::::: maximumDifference****::: " + problems.maximumDifference(numz));
         System.out.println(":::::::::: numSubseq****::: " + problems.numSubseq(new int[]{3, 3, 6, 8}, 10));
+        System.out.println(":::::::::: matchPlayersAndTrainers****::: " + problems.matchPlayersAndTrainers(new int[]{1, 1, 1}, new int[]{10}));
+        System.out.println(":::::::::: countHillValley****::: " + problems.countHillValley(new int[]{2, 4, 1, 1, 6, 5}));
+        System.out.println(":::::::::: sumZero****::: " + Arrays.toString(problems.sumZero(5)));
 
     }
 
@@ -1097,8 +1100,232 @@ public class Problems {
 
     }
 
+    /*   Input: events = [[1,2],[2,3],[3,4]]
+       Output: 3
+       Explanation: You can attend all the three events.
+       One way to attend them all is as shown.
+       Attend the first event on day 1.
+       Attend the second event on day 2.
+       Attend the third event on day 3.*/
+    public int maxEvents(int[][] events) {
+        int n = events.length;
+        int maxDay = 0;
+        for (int[] event : events) {
+            maxDay = Math.max(maxDay, event[1]);
+        }
+
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+        Arrays.sort(events, (a, b) -> a[0] - b[0]);
+        int ans = 0;
+        for (int i = 1, j = 0; i <= maxDay; i++) {
+            while (j < n && events[j][0] <= i) {
+                pq.offer(events[j][1]);
+                j++;
+            }
+            while (!pq.isEmpty() && pq.peek() < i) {
+                pq.poll();
+            }
+            if (!pq.isEmpty()) {
+                pq.poll();
+                ans++;
+            }
+        }
+
+        return ans;
+
+    }
 
 
+    public int matchPlayersAndTrainers(int[] players, int[] trainers) {
+        Arrays.sort(players);
+        Arrays.sort(trainers);
+        int i = 0, j = 0;
+        int count = 0;
+        while (i < players.length && j < trainers.length) {
+            if (players[i] <= trainers[j]) {
+                count++;
+                i++;
+            }
+            j++;
+        }
+        return count;
+
+    }
+
+    public int maxProfitAssignment(int[] difficulty, int[] profit, int[] worker) {
+        List<int[]> jobProfile = new ArrayList<>();
+        jobProfile.add(new int[]{0, 0});
+        for (int i = 0; i < difficulty.length; i++) {
+            jobProfile.add(new int[]{difficulty[i], profit[i]});
+        }
+
+        // Sort by difficulty values in increasing order.
+        Collections.sort(jobProfile, (a, b) -> Integer.compare(a[0], b[0]));
+        for (int i = 0; i < jobProfile.size() - 1; i++) {
+            jobProfile.get(i + 1)[1] = Math.max(
+                    jobProfile.get(i)[1],
+                    jobProfile.get(i + 1)[1]
+            );
+        }
+
+        int netProfit = 0;
+        for (int i = 0; i < worker.length; i++) {
+            int ability = worker[i];
+
+            // Find the job with just smaller or equal difficulty than ability.
+            int l = 0, r = jobProfile.size() - 1, jobProfit = 0;
+            while (l <= r) {
+                int mid = (l + r) / 2;
+                if (jobProfile.get(mid)[0] <= ability) {
+                    jobProfit = Math.max(jobProfit, jobProfile.get(mid)[1]);
+                    l = mid + 1;
+                } else {
+                    r = mid - 1;
+                }
+            }
+
+            // Increment profit of current worker to total profit.
+            netProfit += jobProfit;
+        }
+        return netProfit;
+
+    }
+
+    class Trie {
+
+        String serial; // current node structure's serialized representation
+        Map<String, Trie> children = new HashMap<>(); // current node's child nodes
+    }
+
+    public List<List<String>> deleteDuplicateFolder(List<List<String>> paths) {
+        Trie root = new Trie(); // root node
+
+        // build a trie tree
+        for (List<String> path : paths) {
+            Trie cur = root;
+            for (String node : path) {
+                cur.children.putIfAbsent(node, new Trie());
+                cur = cur.children.get(node);
+            }
+        }
+
+        Map<String, Integer> freq = new HashMap<>(); // hash table records the occurrence times of each serialized representation
+        // post-order traversal based on depth-first search, calculate the serialized representation of each node structure
+        construct(root, freq);
+        List<List<String>> ans = new ArrayList<>();
+        List<String> path = new ArrayList<>();
+        // operate the trie, delete duplicate folders
+        operate(root, freq, path, ans);
+        return ans;
+    }
+
+    private void construct(Trie node, Map<String, Integer> freq) {
+        if (node.children.isEmpty()) return; // if it is a leaf node, no operation is needed.
+
+        List<String> v = new ArrayList<>();
+        for (Map.Entry<String, Trie> entry : node.children.entrySet()) {
+            construct(entry.getValue(), freq);
+            v.add(entry.getKey() + "(" + entry.getValue().serial + ")");
+        }
+
+        Collections.sort(v);
+        StringBuilder sb = new StringBuilder();
+        for (String s : v) {
+            sb.append(s);
+        }
+        node.serial = sb.toString();
+        freq.put(node.serial, freq.getOrDefault(node.serial, 0) + 1);
+    }
+
+    private void operate(Trie node, Map<String, Integer> freq, List<String> path, List<List<String>> ans) {
+        if (freq.getOrDefault(node.serial, 0) > 1)
+            return; // if the serialization representation appears more than once, it needs to be deleted
+
+        if (!path.isEmpty()) {
+            ans.add(new ArrayList<>(path));
+        }
+
+        for (Map.Entry<String, Trie> entry : node.children.entrySet()) {
+            path.add(entry.getKey());
+            operate(entry.getValue(), freq, path, ans);
+            path.remove(path.size() - 1);
+        }
+    }
+
+
+    public int countHillValley(int[] nums) {
+        int count = 0;
+        int len = nums.length;
+
+        for (int i = 1; i < len - 1; i++) {
+            // Skip equal values
+            if (nums[i] == nums[i - 1]) continue;
+
+            // Find previous different number
+            int left = i - 1;
+            while (left >= 0 && nums[left] == nums[i]) {
+                left--;
+            }
+
+            // Find next different number
+            int right = i + 1;
+            while (right < len && nums[right] == nums[i]) {
+                right++;
+            }
+
+            if (left >= 0 && right < len) {
+                if ((nums[i] > nums[left] && nums[i] > nums[right]) ||
+                        (nums[i] < nums[left] && nums[i] < nums[right])) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+
+    public double new21Game(int n, int k, int maxPts) {
+        double dp[] = new double[n + 1];
+        dp[0] = 1;
+        double s = k > 0 ? 1 : 0;
+        for (int i = 1; i <= n; i++) {
+            dp[i] = s / maxPts;
+            if (i < k) {
+                s += dp[i];
+            }
+            if (i - maxPts >= 0 && i - maxPts < k) {
+                s -= dp[i - maxPts];
+            }
+        }
+        double ans = 0;
+        for (int i = k; i <= n; i++) {
+            ans += dp[i];
+        }
+        return ans;
+
+    }
+
+
+    public int[] sumZero(int n) {
+        int[] results = new int[n];
+        int left = 0;
+        int right = n - 1;
+        int num = 1;
+        while (left < right) {
+            results[left] = num;
+            results[right] = -num;
+            left++;
+            right--;
+            num++;
+        }
+        if (n % 2 != 0) {
+            results[left] = 0;
+        }
+        return results;
+
+
+    }
 
 
 }
